@@ -1,0 +1,7 @@
+{
+  "name": "IPFOSS École de Santé",
+  "description": "Institut de formation supérieure en santé à Dakar, Sénégal. Excellence académique et rigueur scientifique pour les futurs professionnels de santé.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
