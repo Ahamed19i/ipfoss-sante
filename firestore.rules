@@ -76,7 +76,13 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin'] ||
+         request.auth.token.email == "hassanimhoma2019@gmail.com");
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin' ||
          request.auth.token.email == "hassanimhoma2019@gmail.com");
     }
 
@@ -115,9 +121,9 @@ service cloud.firestore {
     }
 
     function isValidUser(data) {
-      return hasOnlyAllowedFields(['email', 'role', 'displayName']) &&
+      return hasOnlyAllowedFields(['email', 'role', 'displayName', 'createdAt']) &&
              isValidEmail(data.email) &&
-             data.role in ['admin', 'editor', 'user'] &&
+             data.role in ['admin', 'super_admin', 'editor', 'user'] &&
              (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100));
     }
 
@@ -160,10 +166,15 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && 
-                      request.resource.data.role == 'user'; // Users can only create themselves as 'user'
-      allow update: if (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role) || isAdmin();
-      allow delete: if isAdmin();
+      allow create: if (isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == 'user') || isSuperAdmin();
+      allow update: if (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role) || isSuperAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
     }
 
     match /formations/{formationId} {

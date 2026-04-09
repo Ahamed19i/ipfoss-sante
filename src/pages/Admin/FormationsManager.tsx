@@ -1,9 +1,11 @@
 
+
 import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Pencil, Trash2, X, Save, GraduationCap, Clock, FileText, List, DollarSign, BookOpen } from 'lucide-react';
+import { logAction } from '../../lib/audit';
 
 interface Formation {
   id: string;
@@ -100,8 +102,10 @@ export default function FormationsManager() {
 
       if (editingId) {
         await updateDoc(doc(db, 'formations', editingId), data);
+        await logAction('UPDATE', 'FORMATION', `Updated formation: ${data.title}`);
       } else {
         await addDoc(collection(db, 'formations'), data);
+        await logAction('CREATE', 'FORMATION', `Created formation: ${data.title}`);
       }
       
       setIsModalOpen(false);
@@ -113,9 +117,11 @@ export default function FormationsManager() {
   };
 
   const handleDelete = async (id: string) => {
+    const formation = formations.find(f => f.id === id);
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cette formation ?")) {
       try {
         await deleteDoc(doc(db, 'formations', id));
+        await logAction('DELETE', 'FORMATION', `Deleted formation: ${formation?.title || id}`);
         fetchFormations();
       } catch (err) {
         console.error("Error deleting formation:", err);

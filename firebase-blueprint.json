@@ -37,8 +37,9 @@
       "type": "object",
       "properties": {
         "email": { "type": "string", "format": "email" },
-        "role": { "type": "string", "enum": ["admin", "editor", "user"] },
-        "displayName": { "type": "string" }
+        "role": { "type": "string", "enum": ["admin", "super_admin", "editor", "user"] },
+        "displayName": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["email", "role"]
     },
@@ -74,6 +75,20 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["fullName", "email", "phone", "formationId", "createdAt"]
+    },
+    "audit_logs": {
+      "title": "Logs d'Audit",
+      "description": "Historique des actions administratives",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "action": { "type": "string" },
+        "resource": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "userEmail", "action", "resource", "timestamp"]
     }
   },
   "firestore": {
@@ -96,6 +111,10 @@
     "/leads/{leadId}": {
       "schema": "leads",
       "description": "Collection des leads (prospects)"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "audit_logs",
+      "description": "Collection des logs d'audit"
     }
   }
 }

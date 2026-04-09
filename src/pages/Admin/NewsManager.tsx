@@ -1,8 +1,11 @@
+
+
 import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, query, orderBy, Timestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Trash2, Edit2, X, Save, Image as ImageIcon, Calendar, Tag, User } from 'lucide-react';
+import { logAction } from '../../lib/audit';
 
 interface NewsItem {
   id: string;
@@ -53,11 +56,13 @@ export default function NewsManager() {
           ...formData,
           date: editingItem.date, // Keep original date or update to now?
         });
+        await logAction('UPDATE', 'NEWS', `Updated news article: ${formData.title}`);
       } else {
         await addDoc(collection(db, 'news'), {
           ...formData,
           date: Timestamp.now(),
         });
+        await logAction('CREATE', 'NEWS', `Created news article: ${formData.title}`);
       }
       setIsModalOpen(false);
       setEditingItem(null);
@@ -69,9 +74,11 @@ export default function NewsManager() {
   };
 
   const handleDelete = async (id: string) => {
+    const item = news.find(n => n.id === id);
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cet article ?")) {
       try {
         await deleteDoc(doc(db, 'news', id));
+        await logAction('DELETE', 'NEWS', `Deleted news article: ${item?.title || id}`);
         fetchNews();
       } catch (err) {
         console.error("Error deleting news:", err);

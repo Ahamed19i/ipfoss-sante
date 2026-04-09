@@ -1,3 +1,4 @@
+
 import { motion } from 'motion/react';
 import { ArrowRight, CheckCircle2, Users, Award, Building2, Stethoscope, HeartPulse, Microscope, Activity, GraduationCap, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -66,7 +67,7 @@ export default function Home() {
                 <Link to="/admissions#formulaire" className="btn-primary flex items-center gap-2 px-8 py-4">
                   Candidater maintenant <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link to="/contact" className="btn-secondary border-white text-white hover:bg-white hover:text-medical-blue px-8 py-4">
+                <Link to="/contact" className="px-8 py-4 rounded-2xl font-bold text-white border-2 border-white/30 hover:bg-white hover:text-medical-blue transition-all backdrop-blur-sm">
                   Prendre rendez-vous
                 </Link>
               </div>

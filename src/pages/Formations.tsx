@@ -1,4 +1,5 @@
 
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import SectionHeading from '../components/SectionHeading';
@@ -41,6 +42,7 @@ export default function Formations() {
     phone: ''
   });
   const [isSubmittingLead, setIsSubmittingLead] = useState(false);
+  const [formErrors, setFormErrors] = useState({ fullName: '', email: '', phone: '' });
 
   useEffect(() => {
     const fetchFormations = async () => {
@@ -58,23 +60,58 @@ export default function Formations() {
     fetchFormations();
   }, []);
 
+  const validateForm = () => {
+    const errors = { fullName: '', email: '', phone: '' };
+    let isValid = true;
+
+    if (!leadFormData.fullName.trim()) {
+      errors.fullName = "Nom complet requis";
+      isValid = false;
+    }
+
+    if (!leadFormData.email.trim()) {
+      errors.email = "Email requis";
+      isValid = false;
+    } else if (!/^\S+@\S+$/i.test(leadFormData.email)) {
+      errors.email = "Email invalide";
+      isValid = false;
+    }
+
+    if (!leadFormData.phone.trim()) {
+      errors.phone = "Téléphone requis";
+      isValid = false;
+    } else if (!/^[0-9+\s]{8,20}$/.test(leadFormData.phone)) {
+      errors.phone = "Numéro invalide";
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
+
   const handleDownloadClick = (formation: Formation) => {
     setSelectedFormation(formation);
     setIsLeadModalOpen(true);
+    setFormErrors({ fullName: '', email: '', phone: '' });
   };
 
   const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFormation) return;
+    if (!validateForm()) return;
 
     setIsSubmittingLead(true);
     try {
+      const { logAction } = await import('../lib/audit');
+      
       await addDoc(collection(db, 'leads'), {
         ...leadFormData,
         formationId: selectedFormation.id,
         formationTitle: selectedFormation.title,
         createdAt: serverTimestamp()
       });
+
+      await logAction('DOWNLOAD', 'BROCHURE', `Lead ${leadFormData.email} downloaded brochure for ${selectedFormation.title}`);
 
       // Trigger download
       if (selectedFormation.brochureUrl) {
@@ -274,39 +311,39 @@ export default function Formations() {
                     <User className="w-4 h-4" /> Nom Complet
                   </label>
                   <input
-                    required
                     type="text"
                     value={leadFormData.fullName}
                     onChange={e => setLeadFormData({...leadFormData, fullName: e.target.value})}
-                    className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium"
+                    className={`w-full px-6 py-4 rounded-2xl border ${formErrors.fullName ? 'border-red-500' : 'border-gray-100'} bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium`}
                     placeholder="Ex: Moussa Diop"
                   />
+                  {formErrors.fullName && <p className="text-red-500 text-[10px] font-bold mt-1">{formErrors.fullName}</p>}
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                     <Mail className="w-4 h-4" /> Email
                   </label>
                   <input
-                    required
                     type="email"
                     value={leadFormData.email}
                     onChange={e => setLeadFormData({...leadFormData, email: e.target.value})}
-                    className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium"
+                    className={`w-full px-6 py-4 rounded-2xl border ${formErrors.email ? 'border-red-500' : 'border-gray-100'} bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium`}
                     placeholder="votre@email.com"
                   />
+                  {formErrors.email && <p className="text-red-500 text-[10px] font-bold mt-1">{formErrors.email}</p>}
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                     <Phone className="w-4 h-4" /> Téléphone
                   </label>
                   <input
-                    required
                     type="tel"
                     value={leadFormData.phone}
                     onChange={e => setLeadFormData({...leadFormData, phone: e.target.value})}
-                    className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium"
+                    className={`w-full px-6 py-4 rounded-2xl border ${formErrors.phone ? 'border-red-500' : 'border-gray-100'} bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium`}
                     placeholder="+221 ..."
                   />
+                  {formErrors.phone && <p className="text-red-500 text-[10px] font-bold mt-1">{formErrors.phone}</p>}
                 </div>
 
                 <button 

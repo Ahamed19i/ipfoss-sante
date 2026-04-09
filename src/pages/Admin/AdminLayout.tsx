@@ -1,11 +1,11 @@
 
-
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Newspaper, Users, LogOut, Globe, Menu, X, GraduationCap, UserCheck } from 'lucide-react';
+import { LayoutDashboard, Newspaper, Users, LogOut, Globe, Menu, X, GraduationCap, UserCheck, Shield, History } from 'lucide-react';
 import { useState } from 'react';
 import { auth } from '../../lib/firebase';
 import { signOut } from 'firebase/auth';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '../../hooks/useAuth';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Tableau de bord', path: '/admin' },
@@ -13,11 +13,14 @@ const menuItems = [
   { icon: GraduationCap, label: 'Formations', path: '/admin/formations' },
   { icon: Users, label: 'Candidatures', path: '/admin/applications' },
   { icon: UserCheck, label: 'Leads (Prospects)', path: '/admin/leads' },
+  { icon: Shield, label: 'Administrateurs', path: '/admin/managers' },
+  { icon: History, label: 'Audit Logs', path: '/admin/logs' },
 ];
 
 export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAdmin, loading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {

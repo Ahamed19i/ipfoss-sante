@@ -201,7 +201,7 @@ export default function Admissions() {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-12 md:p-16 rounded-[3rem] shadow-2xl border border-gray-100 relative overflow-hidden"
+            className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 relative overflow-hidden"
           >
             <AnimatePresence mode="wait">
               {!isSubmitted ? (
@@ -211,22 +211,22 @@ export default function Admissions() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-8"
+                  className="space-y-6"
                 >
-                  <div className="space-y-8">
+                  <div className="space-y-6">
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Nom Complet</label>
+                      <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Nom Complet</label>
                       <input
                         {...register('fullName', { required: "Nom complet requis" })}
-                        className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                        className="w-full px-5 py-3.5 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium text-sm"
                         placeholder="Ex: Moussa Diop"
                       />
-                      {errors.fullName && <span className="text-red-500 text-xs mt-2 font-bold">{errors.fullName.message as string}</span>}
+                      {errors.fullName && <span className="text-red-500 text-[10px] mt-1 font-bold">{errors.fullName.message as string}</span>}
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Email</label>
+                        <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Email</label>
                         <input
                           {...register('email', { 
                             required: "Email requis", 
@@ -235,42 +235,48 @@ export default function Admissions() {
                               message: "Email invalide"
                             }
                           })}
-                          className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                          className="w-full px-5 py-3.5 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium text-sm"
                           placeholder="votre@email.com"
                         />
-                        {errors.email && <span className="text-red-500 text-xs mt-2 font-bold">{errors.email.message as string}</span>}
+                        {errors.email && <span className="text-red-500 text-[10px] mt-1 font-bold">{errors.email.message as string}</span>}
                       </div>
                       <div>
-                        <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Téléphone</label>
+                        <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Téléphone</label>
                         <input
-                          {...register('phone', { required: "Téléphone requis" })}
-                          className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                          {...register('phone', { 
+                            required: "Téléphone requis",
+                            pattern: {
+                              value: /^[0-9+\s]{8,20}$/,
+                              message: "Numéro invalide"
+                            }
+                          })}
+                          className="w-full px-5 py-3.5 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium text-sm"
                           placeholder="+221 ..."
                         />
-                        {errors.phone && <span className="text-red-500 text-xs mt-2 font-bold">{errors.phone.message as string}</span>}
+                        {errors.phone && <span className="text-red-500 text-[10px] mt-1 font-bold">{errors.phone.message as string}</span>}
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Formation souhaitée</label>
+                      <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Formation souhaitée</label>
                       <select
                         {...register('program', { required: "Veuillez choisir un programme" })}
-                        className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium appearance-none"
+                        className="w-full px-5 py-3.5 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium text-sm appearance-none"
                       >
                         <option value="">Sélectionnez un programme</option>
                         <option value="infirmiers">Soins Infirmiers</option>
                         <option value="biomedecine">Sciences Biomédicales</option>
                         <option value="sante-publique">Santé Publique</option>
                       </select>
-                      {errors.program && <span className="text-red-500 text-xs mt-2 font-bold">{errors.program.message as string}</span>}
+                      {errors.program && <span className="text-red-500 text-[10px] mt-1 font-bold">{errors.program.message as string}</span>}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Message / Motivation</label>
+                      <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">Message / Motivation</label>
                       <textarea
                         {...register('message')}
-                        rows={4}
-                        className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                        rows={3}
+                        className="w-full px-5 py-3.5 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium text-sm"
                         placeholder="Dites-nous pourquoi vous souhaitez nous rejoindre..."
                       />
                     </div>
@@ -279,12 +285,12 @@ export default function Admissions() {
                   <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="btn-primary w-full py-5 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                    className="btn-primary w-full py-4 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-base"
                   >
                     {isSubmitting ? (
-                      <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
-                      <>Envoyer ma candidature <Send className="w-6 h-6" /></>
+                      <>Envoyer ma candidature <Send className="w-5 h-5" /></>
                     )}
                   </button>
                 </motion.form>

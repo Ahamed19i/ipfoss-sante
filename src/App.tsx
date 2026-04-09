@@ -21,6 +21,8 @@ import NewsManager from './pages/Admin/NewsManager';
 import FormationsManager from './pages/Admin/FormationsManager';
 import ApplicationsManager from './pages/Admin/ApplicationsManager';
 import LeadsManager from './pages/Admin/LeadsManager';
+import AdminManager from './pages/Admin/AdminManager';
+import AuditLogs from './pages/Admin/AuditLogs';
 import AdminLayout from './pages/Admin/AdminLayout';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useEffect } from 'react';
@@ -66,6 +68,8 @@ export default function App() {
               <Route path="formations" element={<FormationsManager />} />
               <Route path="applications" element={<ApplicationsManager />} />
               <Route path="leads" element={<LeadsManager />} />
+              <Route path="managers" element={<AdminManager />} />
+              <Route path="logs" element={<AuditLogs />} />
             </Route>
           </Routes>
         </Router>
