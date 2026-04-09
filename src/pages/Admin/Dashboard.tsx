@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect } from 'react';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
@@ -139,9 +141,9 @@ export default function AdminDashboard() {
               <Link to="/admin/news" className="block w-full bg-white text-medical-blue font-bold py-4 rounded-2xl text-center hover:bg-gray-50 transition-all">
                 Publier une actualité
               </Link>
-              <button className="block w-full bg-white/10 border border-white/20 text-white font-bold py-4 rounded-2xl text-center hover:bg-white/20 transition-all">
+              <Link to="/admin/formations" className="block w-full bg-white/10 border border-white/20 text-white font-bold py-4 rounded-2xl text-center hover:bg-white/20 transition-all">
                 Modifier les formations
-              </button>
+              </Link>
             </div>
           </div>
         </section>

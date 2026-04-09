@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "news": {
@@ -40,6 +41,39 @@
         "displayName": { "type": "string" }
       },
       "required": ["email", "role"]
+    },
+    "formations": {
+      "title": "Formations",
+      "description": "Programmes de formation proposés par l'école",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Nom de la formation" },
+        "category": { "type": "string", "description": "Catégorie (infirmiers, biomedecine, sante-publique)" },
+        "description": { "type": "string", "description": "Description courte" },
+        "detailedProgram": { "type": "string", "description": "Programme détaillé (Markdown)" },
+        "modules": { "type": "string", "description": "Modules / spécialités (Markdown)" },
+        "fees": { "type": "string", "description": "Frais de scolarité" },
+        "duration": { "type": "string", "description": "Durée de la formation" },
+        "degree": { "type": "string", "description": "Diplôme délivré" },
+        "outcomes": { "type": "array", "items": { "type": "string" }, "description": "Débouchés" },
+        "requirements": { "type": "string", "description": "Conditions d'admission" },
+        "brochureUrl": { "type": "string", "description": "URL du fichier PDF téléchargeable" }
+      },
+      "required": ["title", "category", "description", "duration", "degree"]
+    },
+    "leads": {
+      "title": "Leads",
+      "description": "Prospects ayant téléchargé une brochure",
+      "type": "object",
+      "properties": {
+        "fullName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "formationId": { "type": "string", "description": "ID de la formation concernée" },
+        "formationTitle": { "type": "string", "description": "Titre de la formation concernée" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fullName", "email", "phone", "formationId", "createdAt"]
     }
   },
   "firestore": {
@@ -54,6 +88,14 @@
     "/users/{userId}": {
       "schema": "users",
       "description": "Collection des profils utilisateurs"
+    },
+    "/formations/{formationId}": {
+      "schema": "formations",
+      "description": "Collection des formations"
+    },
+    "/leads/{leadId}": {
+      "schema": "leads",
+      "description": "Collection des leads (prospects)"
     }
   }
 }

@@ -1,8 +1,28 @@
-import { motion } from 'motion/react';
+
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import SectionHeading from '../components/SectionHeading';
 import Hero from '../components/Hero';
-import { Stethoscope, HeartPulse, Microscope, Activity, ShieldCheck, Users, ArrowRight, Clock, GraduationCap, Briefcase } from 'lucide-react';
+import { db } from '../lib/firebase';
+import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { HeartPulse, Microscope, Activity, ShieldCheck, ArrowRight, Clock, GraduationCap, Briefcase, Download, X, Send, Mail, Phone, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+
+interface Formation {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  detailedProgram?: string;
+  modules?: string;
+  fees?: string;
+  duration: string;
+  degree: string;
+  outcomes?: string[];
+  requirements?: string;
+  brochureUrl?: string;
+}
 
 const categories = [
   { id: 'infirmiers', name: 'Soins Infirmiers', icon: HeartPulse },
@@ -10,37 +30,69 @@ const categories = [
   { id: 'sante-publique', name: 'Santé Publique', icon: Activity },
 ];
 
-const programs = [
-  {
-    category: 'infirmiers',
-    title: 'Licence en Soins Infirmiers',
-    duration: '3 ans',
-    degree: 'Licence d\'État',
-    description: 'Maîtrisez les gestes techniques et la relation d\'aide pour une prise en charge globale et humaine du patient.',
-    outcomes: ['Infirmier d\'État', 'Cadre de santé', 'Infirmier spécialisé'],
-    requirements: 'Baccalauréat toutes séries (S de préférence).',
-  },
-  {
-    category: 'biomedecine',
-    title: 'Technicien Supérieur de Laboratoire',
-    duration: '3 ans',
-    degree: 'Licence Professionnelle',
-    description: 'Formez-vous aux techniques d\'analyse biologique, biochimique et microbiologique pour le diagnostic médical.',
-    outcomes: ['Technicien de laboratoire', 'Responsable qualité', 'Recherche biologique'],
-    requirements: 'Baccalauréat Scientifique.',
-  },
-  {
-    category: 'sante-publique',
-    title: 'Master en Santé Publique',
-    duration: '2 ans',
-    degree: 'Master de Recherche / Professionnel',
-    description: 'Apprenez à concevoir, gérer et évaluer des programmes de santé à l\'échelle des populations.',
-    outcomes: ['Gestionnaire de programmes', 'Épidémiologiste', 'Consultant santé'],
-    requirements: 'Licence en santé ou sciences sociales.',
-  },
-];
-
 export default function Formations() {
+  const [formations, setFormations] = useState<Formation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
+  const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+  const [leadFormData, setLeadFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: ''
+  });
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
+
+  useEffect(() => {
+    const fetchFormations = async () => {
+      try {
+        const q = query(collection(db, 'formations'), orderBy('title', 'asc'));
+        const snap = await getDocs(q);
+        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as Formation));
+        setFormations(data);
+      } catch (err) {
+        console.error("Error fetching formations:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFormations();
+  }, []);
+
+  const handleDownloadClick = (formation: Formation) => {
+    setSelectedFormation(formation);
+    setIsLeadModalOpen(true);
+  };
+
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedFormation) return;
+
+    setIsSubmittingLead(true);
+    try {
+      await addDoc(collection(db, 'leads'), {
+        ...leadFormData,
+        formationId: selectedFormation.id,
+        formationTitle: selectedFormation.title,
+        createdAt: serverTimestamp()
+      });
+
+      // Trigger download
+      if (selectedFormation.brochureUrl) {
+        window.open(selectedFormation.brochureUrl, '_blank');
+      } else {
+        alert("La brochure n'est pas encore disponible pour cette formation.");
+      }
+      
+      setIsLeadModalOpen(false);
+      setLeadFormData({ fullName: '', email: '', phone: '' });
+    } catch (err) {
+      console.error("Error saving lead:", err);
+      alert("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setIsSubmittingLead(false);
+    }
+  };
+
   return (
     <div className="pt-10">
       <Hero 
@@ -69,86 +121,210 @@ export default function Formations() {
       {/* Programs List */}
       <section className="section-padding bg-gray-50">
         <div className="space-y-32">
-          {categories.map((cat) => (
-            <div key={cat.id} id={cat.id} className="scroll-mt-48">
-              <SectionHeading
-                title={cat.name}
-                subtitle={`Découvrez nos programmes spécialisés en ${cat.name.toLowerCase()}.`}
-              />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                {programs
-                  .filter((p) => p.category === cat.id)
-                  .map((program, i) => (
-                    <motion.div
-                      key={program.title}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                      className="bg-white rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
-                    >
-                      <div className="p-10 md:p-14">
-                        <div className="flex flex-wrap items-center gap-4 mb-8">
-                          <span className="px-5 py-1.5 bg-medical-light text-medical-blue rounded-xl text-[10px] font-bold uppercase tracking-widest">
-                            {program.degree}
-                          </span>
-                          <span className="px-5 py-1.5 bg-health-green/10 text-health-green rounded-xl text-[10px] font-bold uppercase tracking-widest">
-                            Homologué par l'État
-                          </span>
-                          <div className="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-widest">
-                            <Clock className="w-4 h-4 text-medical-blue" />
-                            {program.duration}
-                          </div>
-                        </div>
-                        <h3 className="text-3xl md:text-4xl font-display font-bold mb-6 text-gray-900 group-hover:text-medical-blue transition-colors leading-tight">
-                          {program.title}
-                        </h3>
-                        <p className="text-gray-600 mb-10 leading-relaxed text-lg">
-                          {program.description}
-                        </p>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-                          <div>
-                            <h4 className="flex items-center gap-3 font-display font-bold text-gray-900 mb-6 text-xl">
-                              <Briefcase className="w-6 h-6 text-medical-blue" />
-                              Débouchés
-                            </h4>
-                            <ul className="space-y-4">
-                              {program.outcomes.map((outcome, idx) => (
-                                <li key={idx} className="flex items-center gap-3 text-gray-600 font-medium">
-                                  <div className="w-2 h-2 rounded-full bg-health-green" />
-                                  {outcome}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <h4 className="flex items-center gap-3 font-display font-bold text-gray-900 mb-6 text-xl">
-                              <GraduationCap className="w-6 h-6 text-medical-blue" />
-                              Conditions
-                            </h4>
-                            <p className="text-gray-600 leading-relaxed font-medium">
-                              {program.requirements}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-4 pt-10 border-t border-gray-50">
-                          <Link to="/admissions" className="btn-primary flex-1 min-w-[200px]">
-                            Candidater <ArrowRight className="w-5 h-5" />
-                          </Link>
-                          <Link to="/contact" className="btn-secondary flex-1 min-w-[200px]">
-                            Plus d'informations
-                          </Link>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-              </div>
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <div className="w-12 h-12 border-4 border-medical-blue/20 border-t-medical-blue rounded-full animate-spin"></div>
             </div>
-          ))}
+          ) : (
+            categories.map((cat) => {
+              const catFormations = formations.filter(f => f.category === cat.id);
+              if (catFormations.length === 0) return null;
+
+              return (
+                <div key={cat.id} id={cat.id} className="scroll-mt-48">
+                  <SectionHeading
+                    title={cat.name}
+                    subtitle={`Découvrez nos programmes spécialisés en ${cat.name.toLowerCase()}.`}
+                  />
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    {catFormations.map((program, i) => (
+                      <motion.div
+                        key={program.id}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.1 }}
+                        className="bg-white rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
+                      >
+                        <div className="p-10 md:p-14">
+                          <div className="flex flex-wrap items-center gap-4 mb-8">
+                            <span className="px-5 py-1.5 bg-medical-light text-medical-blue rounded-xl text-[10px] font-bold uppercase tracking-widest">
+                              {program.degree}
+                            </span>
+                            <span className="px-5 py-1.5 bg-health-green/10 text-health-green rounded-xl text-[10px] font-bold uppercase tracking-widest">
+                              Homologué par l'État
+                            </span>
+                            <div className="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase tracking-widest">
+                              <Clock className="w-4 h-4 text-medical-blue" />
+                              {program.duration}
+                            </div>
+                          </div>
+                          <h3 className="text-3xl md:text-4xl font-display font-bold mb-6 text-gray-900 group-hover:text-medical-blue transition-colors leading-tight">
+                            {program.title}
+                          </h3>
+                          <p className="text-gray-600 mb-10 leading-relaxed text-lg">
+                            {program.description}
+                          </p>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+                            <div>
+                              <h4 className="flex items-center gap-3 font-display font-bold text-gray-900 mb-6 text-xl">
+                                <Briefcase className="w-6 h-6 text-medical-blue" />
+                                Débouchés
+                              </h4>
+                              <ul className="space-y-4">
+                                {program.outcomes?.map((outcome, idx) => (
+                                  <li key={idx} className="flex items-center gap-3 text-gray-600 font-medium">
+                                    <div className="w-2 h-2 rounded-full bg-health-green" />
+                                    {outcome}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div>
+                              <h4 className="flex items-center gap-3 font-display font-bold text-gray-900 mb-6 text-xl">
+                                <GraduationCap className="w-6 h-6 text-medical-blue" />
+                                Conditions
+                              </h4>
+                              <p className="text-gray-600 leading-relaxed font-medium">
+                                {program.requirements}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Fees & Detailed Info */}
+                          {(program.fees || program.modules) && (
+                            <div className="mb-12 p-8 bg-gray-50 rounded-3xl border border-gray-100">
+                              {program.fees && (
+                                <div className="mb-6">
+                                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">Frais de scolarité</h4>
+                                  <p className="text-xl font-display font-bold text-medical-blue">{program.fees}</p>
+                                </div>
+                              )}
+                              {program.modules && (
+                                <div>
+                                  <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Modules clés</h4>
+                                  <div className="prose prose-sm max-w-none text-gray-600">
+                                    <ReactMarkdown>{program.modules}</ReactMarkdown>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          
+                          <div className="flex flex-wrap gap-4 pt-10 border-t border-gray-50">
+                            <Link to="/admissions#formulaire" className="btn-primary flex-1 min-w-[200px]">
+                              Candidater <ArrowRight className="w-5 h-5" />
+                            </Link>
+                            <button 
+                              onClick={() => handleDownloadClick(program)}
+                              className="btn-secondary flex-1 min-w-[200px] flex items-center justify-center gap-2"
+                            >
+                              <Download className="w-5 h-5" /> Brochure PDF
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </section>
+
+      {/* Lead Capture Modal */}
+      <AnimatePresence>
+        {isLeadModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsLeadModalOpen(false)}
+              className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white w-full max-w-md rounded-[3rem] shadow-2xl relative z-10 p-10 md:p-12"
+            >
+              <button 
+                onClick={() => setIsLeadModalOpen(false)}
+                className="absolute top-8 right-8 p-2 hover:bg-gray-100 rounded-full transition-all"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-medical-light text-medical-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Download className="w-8 h-8" />
+                </div>
+                <h3 className="text-2xl font-display font-bold text-gray-900 mb-4">Télécharger la brochure</h3>
+                <p className="text-gray-500 text-sm">
+                  Veuillez remplir ce court formulaire pour accéder au document complet de la formation <strong>{selectedFormation?.title}</strong>.
+                </p>
+              </div>
+
+              <form onSubmit={handleLeadSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <User className="w-4 h-4" /> Nom Complet
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={leadFormData.fullName}
+                    onChange={e => setLeadFormData({...leadFormData, fullName: e.target.value})}
+                    className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium"
+                    placeholder="Ex: Moussa Diop"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <Mail className="w-4 h-4" /> Email
+                  </label>
+                  <input
+                    required
+                    type="email"
+                    value={leadFormData.email}
+                    onChange={e => setLeadFormData({...leadFormData, email: e.target.value})}
+                    className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium"
+                    placeholder="votre@email.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <Phone className="w-4 h-4" /> Téléphone
+                  </label>
+                  <input
+                    required
+                    type="tel"
+                    value={leadFormData.phone}
+                    onChange={e => setLeadFormData({...leadFormData, phone: e.target.value})}
+                    className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all font-medium"
+                    placeholder="+221 ..."
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  disabled={isSubmittingLead}
+                  className="btn-primary w-full py-5 flex items-center justify-center gap-3 text-lg disabled:opacity-50"
+                >
+                  {isSubmittingLead ? (
+                    <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>Accéder au téléchargement <Send className="w-5 h-5" /></>
+                  )}
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Career Support */}
       <section className="section-padding">

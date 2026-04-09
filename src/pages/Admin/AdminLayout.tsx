@@ -1,5 +1,7 @@
+
+
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Newspaper, Users, LogOut, Globe, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Newspaper, Users, LogOut, Globe, Menu, X, GraduationCap, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 import { auth } from '../../lib/firebase';
 import { signOut } from 'firebase/auth';
@@ -8,7 +10,9 @@ import { motion, AnimatePresence } from 'motion/react';
 const menuItems = [
   { icon: LayoutDashboard, label: 'Tableau de bord', path: '/admin' },
   { icon: Newspaper, label: 'Actualités', path: '/admin/news' },
+  { icon: GraduationCap, label: 'Formations', path: '/admin/formations' },
   { icon: Users, label: 'Candidatures', path: '/admin/applications' },
+  { icon: UserCheck, label: 'Leads (Prospects)', path: '/admin/leads' },
 ];
 
 export default function AdminLayout() {
