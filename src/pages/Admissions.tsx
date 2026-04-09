@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import SectionHeading from '../components/SectionHeading';
-import { FileText, Calendar, CreditCard, CheckCircle2, Info, Send, GraduationCap } from 'lucide-react';
+import Hero from '../components/Hero';
+import { db } from '../lib/firebase';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { FileText, Calendar, CreditCard, CheckCircle2, Info, Send, GraduationCap, Mail } from 'lucide-react';
 
 const steps = [
   {
@@ -27,34 +31,39 @@ const steps = [
 ];
 
 export default function Admissions() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    alert('Votre candidature a été envoyée avec succès ! Nous vous contacterons prochainement.');
+  const onSubmit = async (data: any) => {
+    try {
+      console.log("Envoi de la candidature à ipfossante@gmail.com et sauvegarde en base...");
+      
+      // Save to Firestore
+      await addDoc(collection(db, 'applications'), {
+        fullName: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        formation: data.program,
+        motivation: data.message || '',
+        status: 'pending',
+        createdAt: Timestamp.now()
+      });
+
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error("Erreur lors de l'envoi de la candidature:", err);
+      alert("Une erreur est survenue. Veuillez réessayer.");
+    }
   };
 
   return (
     <div className="pt-10">
-      {/* Hero Section */}
-      <section className="bg-medical-blue py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-health-green rounded-full blur-3xl" />
-        </div>
-        <div className="section-padding relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-3xl md:text-6xl font-display font-bold text-white mb-6">Admissions</h1>
-            <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Rejoignez l'élite des professionnels de santé. Découvrez notre processus de sélection rigoureux et transparent.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <Hero 
+        title="Admissions"
+        subtitle="Rejoignez l'élite des professionnels de santé. Découvrez notre processus de sélection rigoureux et transparent."
+        image="/images/photo2.jpg"
+        badge="Rejoignez l'Excellence"
+      />
 
       {/* Steps Section */}
       <section className="section-padding">
@@ -63,8 +72,8 @@ export default function Admissions() {
           title="Le Processus d'Admission"
           subtitle="Quatre étapes simples pour intégrer l'IPFOSS École de Santé."
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-          <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 relative">
+          <div className="hidden lg:block absolute top-1/2 left-0 w-full h-1 bg-gray-50 -z-0" />
           {steps.map((step, i) => (
             <motion.div
               key={step.title}
@@ -72,13 +81,13 @@ export default function Admissions() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-all text-center relative z-10 border border-gray-100"
+              className="bg-white p-10 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all text-center relative z-10 border border-gray-100 group"
             >
-              <div className="w-16 h-16 bg-medical-blue text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-medical-blue/20">
-                <step.icon className="w-8 h-8" />
+              <div className="w-20 h-20 bg-medical-blue text-white rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-medical-blue/20 group-hover:rotate-6 transition-transform">
+                <step.icon className="w-10 h-10" />
               </div>
-              <h3 className="text-xl font-display font-bold mb-4 text-gray-900">{step.title}</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <h3 className="text-2xl font-display font-bold mb-4 text-gray-900">{step.title}</h3>
+              <p className="text-gray-600 leading-relaxed">
                 {step.description}
               </p>
             </motion.div>
@@ -88,38 +97,38 @@ export default function Admissions() {
 
       {/* Application Form */}
       <section id="formulaire" className="section-padding bg-gray-50">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
           <div>
             <SectionHeading
               title="Candidature en Ligne"
               subtitle="Remplissez ce formulaire pour initier votre dossier de candidature. Nos conseillers vous accompagneront tout au long du processus."
             />
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-health-green/10 flex items-center justify-center text-health-green shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
+            <div className="space-y-8">
+              <div className="flex items-start gap-6 p-8 bg-white rounded-[2rem] shadow-sm border border-gray-100">
+                <div className="w-12 h-12 rounded-2xl bg-health-green/10 flex items-center justify-center text-health-green shrink-0">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-display font-bold text-gray-900 mb-1">Documents requis</h4>
-                  <p className="text-sm text-gray-600">Copie du Baccalauréat, relevés de notes des 3 dernières années, pièce d'identité.</p>
+                  <h4 className="text-xl font-display font-bold text-gray-900 mb-2">Documents requis</h4>
+                  <p className="text-gray-600 leading-relaxed">Copie du Baccalauréat, relevés de notes des 3 dernières années, pièce d'identité.</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-health-green/10 flex items-center justify-center text-health-green shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
+              <div className="flex items-start gap-6 p-8 bg-white rounded-[2rem] shadow-sm border border-gray-100">
+                <div className="w-12 h-12 rounded-2xl bg-health-green/10 flex items-center justify-center text-health-green shrink-0">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-display font-bold text-gray-900 mb-1">Délai de réponse</h4>
-                  <p className="text-sm text-gray-600">Nous traitons les dossiers sous 7 à 10 jours ouvrés.</p>
+                  <h4 className="text-xl font-display font-bold text-gray-900 mb-2">Délai de réponse</h4>
+                  <p className="text-gray-600 leading-relaxed">Nous traitons les dossiers sous 7 à 10 jours ouvrés.</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-health-green/10 flex items-center justify-center text-health-green shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
+              <div className="flex items-start gap-6 p-8 bg-white rounded-[2rem] shadow-sm border border-gray-100">
+                <div className="w-12 h-12 rounded-2xl bg-health-green/10 flex items-center justify-center text-health-green shrink-0">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-display font-bold text-gray-900 mb-1">Aide à l'inscription</h4>
-                  <p className="text-sm text-gray-600">Besoin d'aide ? Contactez notre service admission au +221 33 848 41 33.</p>
+                  <h4 className="text-xl font-display font-bold text-gray-900 mb-2">Aide à l'inscription</h4>
+                  <p className="text-gray-600 leading-relaxed">Besoin d'aide ? Contactez notre service admission au +221 33 848 41 33.</p>
                 </div>
               </div>
             </div>
@@ -129,125 +138,172 @@ export default function Admissions() {
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-10 rounded-[2rem] shadow-xl border border-gray-100"
+            className="bg-white p-12 md:p-16 rounded-[3rem] shadow-2xl border border-gray-100 relative overflow-hidden"
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Prénom</label>
-                  <input
-                    {...register('firstName', { required: true })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/20 outline-none transition-all"
-                    placeholder="Ex: Moussa"
-                  />
-                  {errors.firstName && <span className="text-red-500 text-xs mt-1">Ce champ est requis</span>}
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Nom</label>
-                  <input
-                    {...register('lastName', { required: true })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/20 outline-none transition-all"
-                    placeholder="Ex: Diop"
-                  />
-                  {errors.lastName && <span className="text-red-500 text-xs mt-1">Ce champ est requis</span>}
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Email</label>
-                <input
-                  {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/20 outline-none transition-all"
-                  placeholder="votre@email.com"
-                />
-                {errors.email && <span className="text-red-500 text-xs mt-1">Email invalide</span>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Formation souhaitée</label>
-                <select
-                  {...register('program', { required: true })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/20 outline-none transition-all bg-white"
+            <AnimatePresence mode="wait">
+              {!isSubmitted ? (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="space-y-8"
                 >
-                  <option value="">Sélectionnez un programme</option>
-                  <option value="infirmiers">Soins Infirmiers</option>
-                  <option value="biomedecine">Sciences Biomédicales</option>
-                  <option value="sante-publique">Santé Publique</option>
-                </select>
-              </div>
+                  <div className="space-y-8">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Nom Complet</label>
+                      <input
+                        {...register('fullName', { required: "Nom complet requis" })}
+                        className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                        placeholder="Ex: Moussa Diop"
+                      />
+                      {errors.fullName && <span className="text-red-500 text-xs mt-2 font-bold">{errors.fullName.message as string}</span>}
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Email</label>
+                        <input
+                          {...register('email', { 
+                            required: "Email requis", 
+                            pattern: {
+                              value: /^\S+@\S+$/i,
+                              message: "Email invalide"
+                            }
+                          })}
+                          className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                          placeholder="votre@email.com"
+                        />
+                        {errors.email && <span className="text-red-500 text-xs mt-2 font-bold">{errors.email.message as string}</span>}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Téléphone</label>
+                        <input
+                          {...register('phone', { required: "Téléphone requis" })}
+                          className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                          placeholder="+221 ..."
+                        />
+                        {errors.phone && <span className="text-red-500 text-xs mt-2 font-bold">{errors.phone.message as string}</span>}
+                      </div>
+                    </div>
 
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Dernier diplôme obtenu</label>
-                <input
-                  {...register('lastDegree', { required: true })}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/20 outline-none transition-all"
-                  placeholder="Ex: Baccalauréat S2"
-                />
-              </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Formation souhaitée</label>
+                      <select
+                        {...register('program', { required: "Veuillez choisir un programme" })}
+                        className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium appearance-none"
+                      >
+                        <option value="">Sélectionnez un programme</option>
+                        <option value="infirmiers">Soins Infirmiers</option>
+                        <option value="biomedecine">Sciences Biomédicales</option>
+                        <option value="sante-publique">Santé Publique</option>
+                      </select>
+                      {errors.program && <span className="text-red-500 text-xs mt-2 font-bold">{errors.program.message as string}</span>}
+                    </div>
 
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Message / Motivation</label>
-                <textarea
-                  {...register('message')}
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/20 outline-none transition-all"
-                  placeholder="Dites-nous pourquoi vous souhaitez nous rejoindre..."
-                />
-              </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-3 uppercase tracking-widest">Message / Motivation</label>
+                      <textarea
+                        {...register('message')}
+                        rows={4}
+                        className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium"
+                        placeholder="Dites-nous pourquoi vous souhaitez nous rejoindre..."
+                      />
+                    </div>
+                  </div>
 
-              <button type="submit" className="btn-primary w-full py-4 flex items-center justify-center gap-2">
-                Envoyer ma candidature <Send className="w-5 h-5" />
-              </button>
-            </form>
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="btn-primary w-full py-5 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
+                  >
+                    {isSubmitting ? (
+                      <div className="w-7 h-7 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>Envoyer ma candidature <Send className="w-6 h-6" /></>
+                    )}
+                  </button>
+                </motion.form>
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center py-16"
+                >
+                  <div className="w-24 h-24 bg-health-green/10 text-health-green rounded-3xl flex items-center justify-center mx-auto mb-8 rotate-3 shadow-lg shadow-health-green/10">
+                    <CheckCircle2 className="w-12 h-12" />
+                  </div>
+                  <h3 className="text-4xl font-display font-bold text-gray-900 mb-6">Candidature Envoyée !</h3>
+                  <p className="text-xl text-gray-600 mb-10 max-w-sm mx-auto leading-relaxed">
+                    Merci pour votre intérêt. Notre équipe pédagogique examinera votre dossier et vous contactera sous 7 à 10 jours ouvrés.
+                  </p>
+                  <div className="p-8 bg-gray-50 rounded-[2rem] mb-10 border border-gray-100">
+                    <p className="text-sm text-gray-500 mb-4 font-bold uppercase tracking-widest">Besoin d'aide ?</p>
+                    <a href="mailto:ipfossante@gmail.com" className="text-medical-blue font-bold text-lg flex items-center justify-center gap-3 hover:underline">
+                      <Mail className="w-6 h-6" /> ipfossante@gmail.com
+                    </a>
+                  </div>
+                  <button 
+                    onClick={() => setIsSubmitted(false)}
+                    className="text-medical-blue font-bold hover:underline text-lg"
+                  >
+                    Envoyer une autre candidature
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
       </section>
 
       {/* Tuition Fees Info */}
       <section id="frais" className="section-padding">
-        <div className="bg-gray-900 rounded-[3rem] p-12 md:p-20 text-white relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+        <div className="bg-gray-900 rounded-[4rem] p-12 md:p-24 text-white relative overflow-hidden shadow-2xl">
+          <div className="absolute top-0 left-0 w-1/2 h-full bg-white/5 -skew-x-12 -translate-x-1/2" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center relative z-10">
             <div>
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-8">Frais de Scolarité & Bourses</h2>
-              <p className="text-lg text-white/70 mb-10 leading-relaxed">
+              <h2 className="text-4xl md:text-5xl font-display font-bold mb-10 leading-tight text-white">Frais de Scolarité & Bourses</h2>
+              <p className="text-xl text-white/90 mb-12 leading-relaxed">
                 Nous croyons que le talent ne doit pas être freiné par des barrières financières. L'IPFOSS propose des facilités de paiement et des bourses d'excellence pour les meilleurs dossiers.
               </p>
-              <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-health-green">
-                    <CreditCard className="w-6 h-6" />
+              <div className="space-y-8">
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-health-green shadow-xl">
+                    <CreditCard className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="font-bold">Paiement échelonné</p>
-                    <p className="text-sm text-white/50">Possibilité de régler en 10 mensualités.</p>
+                    <p className="font-bold text-xl text-white">Paiement échelonné</p>
+                    <p className="text-white/70">Possibilité de régler en 10 mensualités.</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-health-green">
-                    <GraduationCap className="w-6 h-6" />
+                <div className="flex items-center gap-6">
+                  <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-health-green shadow-xl">
+                    <GraduationCap className="w-8 h-8" />
                   </div>
                   <div>
-                    <p className="font-bold">Bourses d'Excellence</p>
-                    <p className="text-sm text-white/50">Réduction jusqu'à 50% pour les mentions Très Bien.</p>
+                    <p className="font-bold text-xl text-white">Bourses d'Excellence</p>
+                    <p className="text-white/70">Réduction jusqu'à 50% pour les mentions Très Bien.</p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12">
-              <h3 className="text-2xl font-display font-bold mb-8 text-center">Grille Tarifaire Indicative</h3>
-              <div className="space-y-6">
+            <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[3rem] p-10 md:p-16 shadow-2xl">
+              <h3 className="text-3xl font-display font-bold mb-10 text-center text-white">Grille Tarifaire</h3>
+              <div className="space-y-8">
                 {[
                   { name: 'Soins Infirmiers', price: '850 000 FCFA / an' },
                   { name: 'Sciences Biomédicales', price: '950 000 FCFA / an' },
                   { name: 'Santé Publique', price: '1 200 000 FCFA / an' },
                 ].map((item) => (
-                  <div key={item.name} className="flex justify-between items-center border-b border-white/10 pb-4">
-                    <span className="text-white/80">{item.name}</span>
-                    <span className="font-bold text-health-green">{item.price}</span>
+                  <div key={item.name} className="flex justify-between items-center border-b border-white/10 pb-6">
+                    <span className="text-white/80 text-lg font-medium">{item.name}</span>
+                    <span className="font-bold text-health-green text-xl">{item.price}</span>
                   </div>
                 ))}
               </div>
-              <p className="mt-8 text-xs text-center text-white/40 italic">
+              <p className="mt-10 text-sm text-center text-white/40 italic">
                 * Les tarifs sont donnés à titre indicatif et peuvent varier selon le niveau d'études.
               </p>
             </div>

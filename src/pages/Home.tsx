@@ -63,7 +63,7 @@ export default function Home() {
                 IPFOSS École de Santé est l'institution de référence au Sénégal pour une formation en santé de standard international. Rigueur, éthique et innovation au service de la vie.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to="/admissions" className="btn-primary flex items-center gap-2 px-8 py-4">
+                <Link to="/admissions#formulaire" className="btn-primary flex items-center gap-2 px-8 py-4">
                   Candidater maintenant <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link to="/contact" className="btn-secondary border-white text-white hover:bg-white hover:text-medical-blue px-8 py-4">
@@ -103,7 +103,7 @@ export default function Home() {
       <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <Link to="/admissions" className="group p-8 rounded-3xl bg-medical-blue text-white hover:scale-[1.02] transition-all shadow-xl shadow-medical-blue/20 overflow-hidden relative">
+            <Link to="/admissions#formulaire" className="group p-8 rounded-3xl bg-medical-blue text-white hover:scale-[1.02] transition-all shadow-xl shadow-medical-blue/20 overflow-hidden relative">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform">
                 <GraduationCap className="w-24 h-24" />
               </div>
@@ -261,7 +261,7 @@ export default function Home() {
               Rejoignez une communauté d'étudiants passionnés et bénéficiez d'un encadrement d'exception pour réussir votre parcours professionnel.
             </p>
             <div className="flex flex-wrap justify-center gap-6">
-              <Link to="/admissions" className="bg-white text-medical-blue hover:bg-gray-100 px-10 py-5 rounded-2xl font-bold text-lg shadow-xl transition-all hover:-translate-y-1">
+              <Link to="/admissions#formulaire" className="bg-white text-medical-blue hover:bg-gray-100 px-10 py-5 rounded-2xl font-bold text-lg shadow-xl transition-all hover:-translate-y-1">
                 Déposer ma candidature
               </Link>
               <Link to="/contact" className="bg-medical-blue/20 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 px-10 py-5 rounded-2xl font-bold text-lg transition-all hover:-translate-y-1">

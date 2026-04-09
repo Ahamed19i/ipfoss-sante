@@ -50,7 +50,7 @@ export default function Footer() {
               </span>
             </div>
           </Link>
-          <p className="text-gray-400 mb-8 max-w-sm leading-relaxed">
+          <p className="text-gray-300 mb-8 max-w-sm leading-relaxed">
             L'excellence académique au service de la santé. Former les leaders de demain pour un système de santé performant et humain au Sénégal et en Afrique.
           </p>
           <div className="flex gap-4">
@@ -74,7 +74,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className="text-gray-400 hover:text-white transition-colors text-sm flex items-center group"
+                    className="text-gray-300 hover:text-white transition-colors text-sm flex items-center group"
                   >
                     {link.name}
                     <ArrowUpRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-all -translate-y-1 group-hover:translate-y-0" />
@@ -117,12 +117,14 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>© {currentYear} IPFOSS École de Santé. Tous droits réservés.</p>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-xs text-gray-500">
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <p>© {currentYear} IPFOSS École de Santé. Tous droits réservés.</p>
+            <Link to="/admin/login" className="opacity-0 hover:opacity-100 transition-opacity">Administration</Link>
+          </div>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">Mentions Légales</a>
-            <a href="#" className="hover:text-white transition-colors">Politique de Confidentialité</a>
-            <a href="#" className="hover:text-white transition-colors">Plan du Site</a>
+            <Link to="/mentions-legales" className="hover:text-white transition-colors">Mentions Légales</Link>
+            <Link to="/politique-de-confidentialite" className="hover:text-white transition-colors">Politique de Confidentialité</Link>
           </div>
         </div>
       </div>

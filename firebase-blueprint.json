@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "news": {
+      "title": "Actualités",
+      "description": "Articles d'actualités de l'école",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Titre de l'article" },
+        "excerpt": { "type": "string", "description": "Résumé court" },
+        "content": { "type": "string", "description": "Contenu complet en markdown" },
+        "image": { "type": "string", "description": "URL de l'image de couverture" },
+        "date": { "type": "string", "format": "date-time", "description": "Date de publication" },
+        "category": { "type": "string", "description": "Catégorie de l'article" },
+        "author": { "type": "string", "description": "Auteur de l'article" }
+      },
+      "required": ["title", "excerpt", "content", "date", "category"]
+    },
+    "applications": {
+      "title": "Candidatures",
+      "description": "Candidatures envoyées par les étudiants",
+      "type": "object",
+      "properties": {
+        "fullName": { "type": "string", "description": "Nom complet" },
+        "email": { "type": "string", "format": "email", "description": "Email de contact" },
+        "phone": { "type": "string", "description": "Numéro de téléphone" },
+        "formation": { "type": "string", "description": "Formation choisie" },
+        "motivation": { "type": "string", "description": "Lettre de motivation" },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "accepted", "rejected"], "description": "Statut de la candidature" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Date de soumission" }
+      },
+      "required": ["fullName", "email", "phone", "formation", "createdAt"]
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "description": "Profils utilisateurs et rôles",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "editor", "user"] },
+        "displayName": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/news/{newsId}": {
+      "schema": "news",
+      "description": "Collection des actualités"
+    },
+    "/applications/{applicationId}": {
+      "schema": "applications",
+      "description": "Collection des candidatures"
+    },
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "Collection des profils utilisateurs"
+    }
+  }
+}

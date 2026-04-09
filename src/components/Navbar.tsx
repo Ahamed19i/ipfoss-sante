@@ -66,50 +66,58 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled 
+          ? 'bg-white/90 backdrop-blur-xl shadow-lg py-3' 
+          : 'bg-gradient-to-b from-black/50 to-transparent py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="bg-medical-blue p-2 rounded-lg group-hover:scale-110 transition-transform">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="bg-medical-blue p-2.5 rounded-xl group-hover:scale-110 transition-transform shadow-lg shadow-medical-blue/20">
             <GraduationCap className="text-white w-6 h-6" />
           </div>
           <div className="flex flex-col">
-            <span className={`font-display font-bold text-xl leading-none ${scrolled ? 'text-medical-blue' : 'text-medical-blue'}`}>
+            <span className={`font-display font-bold text-2xl leading-none tracking-tight transition-colors ${scrolled ? 'text-gray-900' : 'text-white'}`}>
               IPFOSS
             </span>
-            <span className={`text-[10px] font-medium tracking-widest uppercase ${scrolled ? 'text-gray-500' : 'text-gray-600'}`}>
+            <span className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${scrolled ? 'text-medical-blue' : 'text-white/90'}`}>
               École de Santé
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`text-sm font-medium transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:h-0.5 after:bg-medical-blue after:transition-all ${
+              className={`text-sm font-bold transition-all relative py-2 ${
                 location.pathname === link.path 
-                  ? 'text-medical-blue after:w-full' 
-                  : 'text-gray-600 hover:text-medical-blue after:w-0 hover:after:w-full'
+                  ? (scrolled ? 'text-medical-blue' : 'text-white') 
+                  : (scrolled ? 'text-gray-600 hover:text-medical-blue' : 'text-white/80 hover:text-white')
               }`}
             >
               {link.name}
+              {location.pathname === link.path && (
+                <motion.div 
+                  layoutId="nav-underline"
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${scrolled ? 'bg-medical-blue' : 'bg-white'}`}
+                />
+              )}
             </Link>
           ))}
         </div>
 
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden lg:flex items-center gap-6">
           <button 
             onClick={() => setIsSearchOpen(true)}
-            className="p-2 text-gray-500 hover:text-medical-blue transition-colors"
+            className={`p-2 rounded-full transition-all ${scrolled ? 'text-gray-500 hover:bg-gray-100 hover:text-medical-blue' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
           >
             <Search className="w-5 h-5" />
           </button>
-          <Link to="/admissions" className="btn-primary py-2 px-5 text-sm">
+          <Link to="/admissions#formulaire" className={`btn-primary py-2.5 px-6 text-sm ${!scrolled && 'bg-white text-medical-blue hover:bg-gray-100 border-none shadow-xl shadow-black/20'}`}>
             Candidater
           </Link>
         </div>
@@ -118,12 +126,12 @@ export default function Navbar() {
         <div className="flex lg:hidden items-center gap-2">
           <button 
             onClick={() => setIsSearchOpen(true)}
-            className="p-2 text-medical-blue"
+            className={`p-2 ${scrolled ? 'text-medical-blue' : 'text-white'}`}
           >
             <Search className="w-5 h-5" />
           </button>
           <button
-            className="p-2 text-medical-blue"
+            className={`p-2 ${scrolled ? 'text-medical-blue' : 'text-white'}`}
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -279,7 +287,7 @@ export default function Navbar() {
             <div className="p-8 border-t border-gray-100 bg-gray-50">
               <div className="flex flex-col gap-4">
                 <Link 
-                  to="/admissions" 
+                  to="/admissions#formulaire" 
                   onClick={() => setIsOpen(false)}
                   className="w-full py-5 bg-medical-blue text-white rounded-2xl font-bold text-center shadow-xl shadow-medical-blue/20"
                 >

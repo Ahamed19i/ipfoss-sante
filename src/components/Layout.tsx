@@ -3,11 +3,11 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import WhatsAppButton from './WhatsAppButton';
 import { motion, AnimatePresence } from 'motion/react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Outlet } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
 
 interface LayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
@@ -38,7 +38,7 @@ export default function Layout({ children }: LayoutProps) {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            {children}
+            {children || <Outlet />}
           </motion.div>
         </AnimatePresence>
       </main>
