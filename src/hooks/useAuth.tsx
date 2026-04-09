@@ -1,3 +1,4 @@
+
 import { useState, useEffect, createContext, useContext } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -21,10 +22,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(user);
       if (user) {
         // Check if user is admin in Firestore or by email
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        const userData = userDoc.data();
-        const isDefaultAdmin = user.email === 'hassanimhoma2019@gmail.com';
-        setIsAdmin(userData?.role === 'admin' || isDefaultAdmin);
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          const userData = userDoc.data();
+          const isDefaultAdmin = user.email === 'hassanimhoma2019@gmail.com';
+          // Consistency with Firestore rules: check email and verification if it's the default admin
+          const isAdminByEmail = isDefaultAdmin && (user.emailVerified || user.providerData.some(p => p.providerId === 'google.com'));
+          setIsAdmin(userData?.role === 'admin' || isAdminByEmail);
+        } catch (error) {
+          console.error("Error checking admin status:", error);
+          // Fallback to email check if Firestore fails
+          setIsAdmin(user.email === 'hassanimhoma2019@gmail.com');
+        }
       } else {
         setIsAdmin(false);
       }

@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trash2, CheckCircle2, XCircle, Clock, Mail, Phone, GraduationCap, FileText, Search, Filter } from 'lucide-react';
+import { Trash2, CheckCircle2, XCircle, Clock, Mail, Phone, GraduationCap, FileText, Search, Filter, User } from 'lucide-react';
 
 interface Application {
   id: string;

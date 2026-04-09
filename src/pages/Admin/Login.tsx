@@ -1,9 +1,10 @@
+
 import { useState } from 'react';
 import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleProvider } from '../../lib/firebase';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { LogIn, Gp as Google, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { LogIn, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AdminLogin() {

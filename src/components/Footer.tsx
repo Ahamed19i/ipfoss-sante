@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 import { GraduationCap, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, ArrowUpRight } from 'lucide-react';
 
@@ -45,7 +46,7 @@ export default function Footer() {
               <span className="font-display font-bold text-2xl leading-none text-white">
                 IPFOSS
               </span>
-              <span className="text-[10px] font-medium tracking-widest uppercase text-gray-400">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/70">
                 École de Santé
               </span>
             </div>
@@ -68,7 +69,7 @@ export default function Footer() {
 
         {footerLinks.map((section) => (
           <div key={section.title}>
-            <h4 className="font-display font-bold text-lg mb-6">{section.title}</h4>
+            <h4 className="font-display font-bold text-lg mb-6 text-white uppercase tracking-wider">{section.title}</h4>
             <ul className="space-y-4">
               {section.links.map((link) => (
                 <li key={link.name}>
