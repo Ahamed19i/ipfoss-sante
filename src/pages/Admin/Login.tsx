@@ -1,4 +1,5 @@
 
+
 import { useState } from 'react';
 import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleProvider } from '../../lib/firebase';
@@ -19,11 +20,18 @@ export default function AdminLogin() {
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
+      setError('');
       await signInWithPopup(auth, googleProvider);
       navigate(from, { replace: true });
     } catch (err: any) {
-      setError("Erreur lors de la connexion avec Google.");
-      console.error(err);
+      console.error("Google Login Error:", err);
+      if (err.code === 'auth/unauthorized-domain') {
+        setError("Ce domaine n'est pas autorisé dans la console Firebase. Veuillez ajouter 'ipfoss-sante.vercel.app' aux domaines autorisés.");
+      } else if (err.code === 'auth/popup-blocked') {
+        setError("Le popup a été bloqué par votre navigateur. Veuillez autoriser les popups pour ce site.");
+      } else {
+        setError("Erreur lors de la connexion avec Google : " + (err.message || "Erreur inconnue"));
+      }
     } finally {
       setLoading(false);
     }
