@@ -1,11 +1,64 @@
+
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion, AnimatePresence } from 'motion/react';
 import SectionHeading from '../components/SectionHeading';
 import Hero from '../components/Hero';
-import { db } from '../lib/firebase';
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { db, auth } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { FileText, Calendar, CreditCard, CheckCircle2, Info, Send, GraduationCap, Mail } from 'lucide-react';
+
+enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId: string | undefined;
+    email: string | null | undefined;
+    emailVerified: boolean | undefined;
+    isAnonymous: boolean | undefined;
+    tenantId: string | null | undefined;
+    providerInfo: {
+      providerId: string;
+      displayName: string | null;
+      email: string | null;
+      photoUrl: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+      isAnonymous: auth.currentUser?.isAnonymous,
+      tenantId: auth.currentUser?.tenantId,
+      providerInfo: auth.currentUser?.providerData.map(provider => ({
+        providerId: provider.providerId,
+        displayName: provider.displayName,
+        email: provider.email,
+        photoUrl: provider.photoURL
+      })) || []
+    },
+    operationType,
+    path
+  }
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 const steps = [
   {
@@ -35,24 +88,24 @@ export default function Admissions() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
   const onSubmit = async (data: any) => {
+    const path = 'applications';
     try {
-      console.log("Envoi de la candidature à ipfossante@gmail.com et sauvegarde en base...");
+      console.log("Envoi de la candidature...");
       
       // Save to Firestore
-      await addDoc(collection(db, 'applications'), {
+      await addDoc(collection(db, path), {
         fullName: data.fullName,
         email: data.email,
         phone: data.phone,
         formation: data.program,
         motivation: data.message || '',
         status: 'pending',
-        createdAt: Timestamp.now()
+        createdAt: serverTimestamp()
       });
 
       setIsSubmitted(true);
     } catch (err) {
-      console.error("Erreur lors de l'envoi de la candidature:", err);
-      alert("Une erreur est survenue. Veuillez réessayer.");
+      handleFirestoreError(err, OperationType.CREATE, path);
     }
   };
 
