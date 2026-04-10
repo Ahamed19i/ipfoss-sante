@@ -31,42 +31,42 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
       {/* Sidebar Desktop */}
-      <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-gray-100 p-8 sticky top-0 h-screen">
-        <div className="flex items-center gap-3 mb-12 px-2">
+      <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-gray-100 p-6 sticky top-0 h-screen">
+        <div className="flex items-center gap-3 mb-10 px-2">
           <div className="w-10 h-10 bg-medical-blue rounded-xl flex items-center justify-center text-white">
             <Globe className="w-6 h-6" />
           </div>
           <span className="text-xl font-display font-bold text-gray-900">IPFOSS Admin</span>
         </div>
 
-        <nav className="flex-grow space-y-2">
+        <nav className="flex-grow space-y-1">
           {menuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all ${
+              className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl font-bold transition-all ${
                 location.pathname === item.path
                   ? 'bg-medical-blue text-white shadow-lg shadow-medical-blue/20'
                   : 'text-gray-500 hover:bg-gray-50 hover:text-medical-blue'
               }`}
             >
               <item.icon className="w-5 h-5" />
-              {item.label}
+              <span className="text-[15px]">{item.label}</span>
             </Link>
           ))}
         </nav>
 
-        <div className="pt-8 border-t border-gray-100 space-y-2">
-          <Link to="/" className="flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-gray-500 hover:bg-gray-50 hover:text-medical-blue transition-all">
+        <div className="pt-6 border-t border-gray-100 space-y-1">
+          <Link to="/" className="flex items-center gap-3 px-4 py-2.5 rounded-2xl font-bold text-gray-500 hover:bg-gray-50 hover:text-medical-blue transition-all">
             <Globe className="w-5 h-5" />
-            Voir le site
+            <span className="text-[15px]">Voir le site</span>
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold text-red-500 hover:bg-red-50 transition-all"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl font-bold text-red-500 hover:bg-red-50 transition-all"
           >
             <LogOut className="w-5 h-5" />
-            Déconnexion
+            <span className="text-[15px]">Déconnexion</span>
           </button>
         </div>
       </aside>

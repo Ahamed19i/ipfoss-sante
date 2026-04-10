@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, GraduationCap, Search, ArrowRight } from 'lucide-react';
@@ -88,12 +89,12 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center gap-10">
+        <div className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`text-sm font-bold transition-all relative py-2 ${
+              className={`text-[13px] xl:text-sm font-bold transition-all relative py-2 whitespace-nowrap ${
                 location.pathname === link.path 
                   ? (scrolled ? 'text-medical-blue' : 'text-white') 
                   : (scrolled ? 'text-gray-600 hover:text-medical-blue' : 'text-white/80 hover:text-white')
@@ -110,14 +111,14 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-4 xl:gap-6">
           <button 
             onClick={() => setIsSearchOpen(true)}
             className={`p-2 rounded-full transition-all ${scrolled ? 'text-gray-500 hover:bg-gray-100 hover:text-medical-blue' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
           >
             <Search className="w-5 h-5" />
           </button>
-          <Link to="/admissions#formulaire" className={`btn-primary py-2.5 px-6 text-sm ${!scrolled && 'bg-white text-medical-blue hover:bg-gray-100 border-none shadow-xl shadow-black/20'}`}>
+          <Link to="/admissions#formulaire" className={`btn-primary py-2 px-4 xl:py-2.5 xl:px-6 text-[13px] xl:text-sm ${!scrolled && 'bg-white text-medical-blue hover:bg-gray-100 border-none shadow-xl shadow-black/20'}`}>
             Candidater
           </Link>
         </div>
