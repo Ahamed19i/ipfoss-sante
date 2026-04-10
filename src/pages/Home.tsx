@@ -58,7 +58,7 @@ export default function Home() {
                 L'Excellence en Santé à Dakar
               </span>
               <h1 className="text-4xl md:text-7xl font-display font-bold text-white mb-8 leading-[1.1]">
-                Former les professionnels de santé de <span className="text-health-green">demain</span>
+                IPFOSS École de Santé : L'excellence en <span className="text-health-green">études infirmières</span> au Sénégal
               </h1>
               <p className="text-xl text-white/80 mb-10 leading-relaxed max-w-2xl">
                 IPFOSS École de Santé est l'institution de référence au Sénégal pour une formation en santé de standard international. Rigueur, éthique et innovation au service de la vie.
@@ -142,8 +142,8 @@ export default function Home() {
       <section className="section-padding bg-gray-50">
         <SectionHeading
           centered
-          title="Nos Pôles de Formation"
-          subtitle="Des programmes conçus pour répondre aux défis sanitaires contemporains avec une approche pédagogique innovante."
+          title="Nos Pôles de Formation Médicale"
+          subtitle="Des programmes de soins infirmiers et de santé publique conçus pour répondre aux défis sanitaires du Sénégal."
         />
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

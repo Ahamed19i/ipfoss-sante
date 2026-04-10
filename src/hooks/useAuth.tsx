@@ -8,14 +8,16 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true, isAdmin: false });
+const AuthContext = createContext<AuthContextType>({ user: null, loading: true, isAdmin: false, isSuperAdmin: false });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -28,14 +30,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const isDefaultAdmin = user.email === 'hassanimhoma2019@gmail.com';
           // Consistency with Firestore rules: check email and verification if it's the default admin
           const isAdminByEmail = isDefaultAdmin && (user.emailVerified || user.providerData.some(p => p.providerId === 'google.com'));
-          setIsAdmin(userData?.role === 'admin' || isAdminByEmail);
+          
+          setIsAdmin(userData?.role === 'admin' || userData?.role === 'super_admin' || isAdminByEmail);
+          setIsSuperAdmin(userData?.role === 'super_admin' || isAdminByEmail);
         } catch (error) {
           console.error("Error checking admin status:", error);
           // Fallback to email check if Firestore fails
-          setIsAdmin(user.email === 'hassanimhoma2019@gmail.com');
+          const isDefaultAdmin = user.email === 'hassanimhoma2019@gmail.com';
+          setIsAdmin(isDefaultAdmin);
+          setIsSuperAdmin(isDefaultAdmin);
         }
       } else {
         setIsAdmin(false);
+        setIsSuperAdmin(false);
       }
       setLoading(false);
     });
@@ -44,7 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, isSuperAdmin }}>
       {children}
     </AuthContext.Provider>
   );

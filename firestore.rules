@@ -174,7 +174,8 @@ service cloud.firestore {
     match /audit_logs/{logId} {
       allow read: if isAdmin();
       allow create: if isAuthenticated();
-      allow update, delete: if false;
+      allow delete: if isSuperAdmin() && resource.data.timestamp < request.time - duration.value(7, 'd');
+      allow update: if false;
     }
 
     match /formations/{formationId} {

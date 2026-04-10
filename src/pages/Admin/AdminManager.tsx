@@ -1,10 +1,12 @@
 
+
 import { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
 import { collection, query, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'motion/react';
-import { UserPlus, Shield, Trash2, Search, X, Mail, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { UserPlus, Shield, Trash2, Search, X, Mail, ShieldCheck, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { logAction } from '../../lib/audit';
+import { useAuth } from '../../hooks/useAuth';
 
 interface AdminUser {
   id: string;
@@ -14,6 +16,7 @@ interface AdminUser {
 }
 
 export default function AdminManager() {
+  const { isSuperAdmin } = useAuth();
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -83,12 +86,19 @@ export default function AdminManager() {
           <h1 className="text-3xl font-display font-bold text-gray-900">Gestion des Administrateurs</h1>
           <p className="text-gray-500">Gérez les accès et les rôles de l'équipe administrative.</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="btn-primary flex items-center gap-2"
-        >
-          <UserPlus className="w-5 h-5" /> Ajouter un admin
-        </button>
+        {isSuperAdmin ? (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <UserPlus className="w-5 h-5" /> Ajouter un admin
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 rounded-xl border border-amber-100 text-sm font-medium">
+            <AlertTriangle className="w-4 h-4" />
+            Accès restreint (Super Admin requis)
+          </div>
+        )}
       </div>
 
       <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
@@ -149,13 +159,15 @@ export default function AdminManager() {
                       </span>
                     </td>
                     <td className="px-8 py-5 text-right">
-                      <button
-                        onClick={() => handleDeleteAdmin(admin.id, admin.email)}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                        title="Retirer les droits"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+                      {isSuperAdmin && (
+                        <button
+                          onClick={() => handleDeleteAdmin(admin.id, admin.email)}
+                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                          title="Retirer les droits"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

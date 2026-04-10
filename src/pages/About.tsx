@@ -1,3 +1,4 @@
+
 import { motion } from 'motion/react';
 import SectionHeading from '../components/SectionHeading';
 import Hero from '../components/Hero';
@@ -30,10 +31,10 @@ export default function About() {
   return (
     <div className="pt-10">
       <Hero 
-        title="À Propos de l'IPFOSS"
-        subtitle="Une institution dédiée à l'excellence médicale, ancrée dans les réalités du Sénégal et ouverte sur le monde."
+        title="École de Santé de Référence à Dakar"
+        subtitle="L'IPFOSS est une institution dédiée à l'excellence médicale, ancrée dans les réalités du Sénégal et ouverte sur le monde."
         image="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=2070"
-        badge="Notre Histoire & Valeurs"
+        badge="À Propos de l'IPFOSS"
       />
 
       {/* Mission & Vision */}

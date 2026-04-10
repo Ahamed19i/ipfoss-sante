@@ -122,10 +122,10 @@ export default function Admissions() {
   return (
     <div className="pt-10">
       <Hero 
-        title="Admissions"
-        subtitle="Rejoignez l'élite des professionnels de santé. Découvrez notre processus de sélection rigoureux et transparent."
+        title="Admissions : Intégrez notre École de Santé"
+        subtitle="Rejoignez l'élite des professionnels de santé au Sénégal. Découvrez notre processus de sélection rigoureux et transparent."
         image="/images/photo2.jpg"
-        badge="Rejoignez l'Excellence"
+        badge="Inscriptions Ouvertes"
       />
 
       {/* Steps Section */}

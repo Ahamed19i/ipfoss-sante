@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import SectionHeading from '../components/SectionHeading';
@@ -133,10 +132,10 @@ export default function Formations() {
   return (
     <div className="pt-10">
       <Hero 
-        title="Nos Formations"
-        subtitle="Des programmes d'excellence conçus pour former les futurs leaders du système de santé."
+        title="Formations en Soins Infirmiers et Santé"
+        subtitle="Découvrez nos programmes d'excellence homologués par l'État du Sénégal pour devenir un professionnel de santé qualifié."
         image="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=2070"
-        badge="Excellence Académique"
+        badge="Formations Médicales au Sénégal"
       />
 
       {/* Categories Navigation */}
@@ -354,7 +353,7 @@ export default function Formations() {
                   {isSubmittingLead ? (
                     <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <>Télecharger le brochure<Send className="w-5 h-5" /></>
+                    <>Accéder au téléchargement <Send className="w-5 h-5" /></>
                   )}
                 </button>
               </form>
