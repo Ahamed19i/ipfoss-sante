@@ -1,7 +1,8 @@
 
+
 import { useState, useEffect, createContext, useContext } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 interface AuthContextType {
@@ -23,22 +24,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       if (user) {
-        // Check if user is admin in Firestore or by email
         try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          const userData = userDoc.data();
-          const isDefaultAdmin = user.email === 'hassanimhoma2019@gmail.com';
-          // Consistency with Firestore rules: check email and verification if it's the default admin
-          const isAdminByEmail = isDefaultAdmin && (user.emailVerified || user.providerData.some(p => p.providerId === 'google.com'));
+          // 1. Try to fetch by UID (Standard way)
+          let userDoc = await getDoc(doc(db, 'users', user.uid));
+          let userData = userDoc.data();
+
+          // 2. If not found by UID, check if there's an invited document by email
+          if (!userData && user.email) {
+            const sanitizedEmail = user.email.replace(/[^a-zA-Z0-9]/g, '_');
+            const invitedDoc = await getDoc(doc(db, 'users', sanitizedEmail));
+            
+            if (invitedDoc.exists()) {
+              const invitedData = invitedDoc.data();
+              // Migrate the document to use UID as ID
+              await setDoc(doc(db, 'users', user.uid), {
+                ...invitedData,
+                uid: user.uid, // Store UID for reference
+                lastLogin: new Date()
+              });
+              // Delete the old email-based document
+              await deleteDoc(doc(db, 'users', sanitizedEmail));
+              
+              userData = invitedData;
+            }
+          }
           
-          setIsAdmin(userData?.role === 'admin' || userData?.role === 'super_admin' || isAdminByEmail);
-          setIsSuperAdmin(userData?.role === 'super_admin' || isAdminByEmail);
+          setIsAdmin(userData?.role === 'admin' || userData?.role === 'super_admin');
+          setIsSuperAdmin(userData?.role === 'super_admin');
         } catch (error) {
           console.error("Error checking admin status:", error);
-          // Fallback to email check if Firestore fails
-          const isDefaultAdmin = user.email === 'hassanimhoma2019@gmail.com';
-          setIsAdmin(isDefaultAdmin);
-          setIsSuperAdmin(isDefaultAdmin);
+          setIsAdmin(false);
+          setIsSuperAdmin(false);
         }
       } else {
         setIsAdmin(false);

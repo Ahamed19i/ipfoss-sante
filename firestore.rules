@@ -76,14 +76,12 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin'] ||
-         request.auth.token.email == "hassanimhoma2019@gmail.com");
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin'];
     }
 
     function isSuperAdmin() {
       return isAuthenticated() && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin' ||
-         request.auth.token.email == "hassanimhoma2019@gmail.com");
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'super_admin';
     }
 
     function isValidEmail(email) {
@@ -165,10 +163,12 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow create: if (isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == 'user') || isSuperAdmin();
+      allow read: if isOwner(userId) || isAdmin() || (isAuthenticated() && request.auth.token.email == resource.data.email);
+      allow create: if (isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == 'user') || 
+                      isSuperAdmin() ||
+                      (isAuthenticated() && isOwner(userId) && request.auth.token.email == request.resource.data.email);
       allow update: if (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role) || isSuperAdmin();
-      allow delete: if isSuperAdmin();
+      allow delete: if isSuperAdmin() || (isAuthenticated() && request.auth.token.email == resource.data.email);
     }
 
     match /audit_logs/{logId} {
