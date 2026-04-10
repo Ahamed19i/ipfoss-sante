@@ -112,9 +112,29 @@ export default function Formations() {
 
       await logAction('DOWNLOAD', 'BROCHURE', `Lead ${leadFormData.email} downloaded brochure for ${selectedFormation.title}`);
 
-      // Trigger download
+      // Trigger direct download
       if (selectedFormation.brochureUrl) {
-        window.open(selectedFormation.brochureUrl, '_blank');
+        try {
+          const response = await fetch(selectedFormation.brochureUrl);
+          if (!response.ok) throw new Error('Download failed');
+          
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          // Extract filename from URL or use a default
+          const fileName = `Brochure-IPFOSS-${selectedFormation.title.replace(/\s+/g, '-')}.pdf`;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        } catch (downloadErr) {
+          console.error("Direct download failed, falling back to window.open:", downloadErr);
+          // Fallback to window.open if fetch fails (e.g. CORS issues)
+          window.open(selectedFormation.brochureUrl, '_blank');
+        }
       } else {
         alert("La brochure n'est pas encore disponible pour cette formation.");
       }
@@ -351,7 +371,10 @@ export default function Formations() {
                   className="btn-primary w-full py-5 flex items-center justify-center gap-3 text-lg disabled:opacity-50"
                 >
                   {isSubmittingLead ? (
-                    <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <>
+                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Préparation du téléchargement...</span>
+                    </>
                   ) : (
                     <>Accéder au téléchargement <Send className="w-5 h-5" /></>
                   )}
