@@ -1,7 +1,6 @@
 
-
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { motion } from 'motion/react';
 import { Users, Newspaper, TrendingUp, Clock, ArrowRight } from 'lucide-react';
@@ -11,6 +10,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({
     newsCount: 0,
     applicationsCount: 0,
+    visitsCount: 0,
     recentApplications: [] as any[],
   });
   const [loading, setLoading] = useState(true);
@@ -22,10 +22,14 @@ export default function AdminDashboard() {
         const appsSnap = await getDocs(collection(db, 'applications'));
         const recentAppsQuery = query(collection(db, 'applications'), orderBy('createdAt', 'desc'), limit(5));
         const recentAppsSnap = await getDocs(recentAppsQuery);
+        
+        const statsDoc = await getDoc(doc(db, 'stats', 'site'));
+        const visits = statsDoc.exists() ? statsDoc.data().visits : 0;
 
         setStats({
           newsCount: newsSnap.size,
           applicationsCount: appsSnap.size,
+          visitsCount: visits,
           recentApplications: recentAppsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })),
         });
       } catch (err) {
@@ -89,7 +93,7 @@ export default function AdminDashboard() {
             <TrendingUp className="w-7 h-7" />
           </div>
           <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">Visites</p>
-          <h3 className="text-4xl font-display font-bold text-gray-900">--</h3>
+          <h3 className="text-4xl font-display font-bold text-gray-900">{stats.visitsCount}</h3>
         </motion.div>
       </div>
 

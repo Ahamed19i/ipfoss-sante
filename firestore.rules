@@ -189,5 +189,12 @@ service cloud.firestore {
       allow create: if isValidLead(request.resource.data) && 
                       (request.resource.data.createdAt == request.time || request.resource.data.createdAt == null);
     }
+
+    match /stats/{docId} {
+      allow read: if true;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visits']) &&
+                      request.resource.data.visits == resource.data.visits + 1;
+      allow create: if isAdmin();
+    }
   }
 }
