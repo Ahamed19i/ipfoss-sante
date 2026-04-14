@@ -1,5 +1,4 @@
 
-
 import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
@@ -29,7 +28,7 @@ export default function FormationsManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
-    category: 'infirmiers',
+    category: '3-ans',
     description: '',
     detailedProgram: '',
     modules: '',
@@ -77,7 +76,7 @@ export default function FormationsManager() {
       setEditingId(null);
       setFormData({
         title: '',
-        category: 'infirmiers',
+        category: '3-ans',
         description: '',
         detailedProgram: '',
         modules: '',
@@ -241,9 +240,9 @@ export default function FormationsManager() {
                       onChange={e => setFormData({...formData, category: e.target.value})}
                       className="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue outline-none transition-all"
                     >
-                      <option value="infirmiers">Soins Infirmiers</option>
-                      <option value="biomedecine">Sciences Biomédicales</option>
-                      <option value="sante-publique">Santé Publique</option>
+                      <option value="3-ans">Formations de 3 ans</option>
+                      <option value="2-ans">Formations de 2 ans</option>
+                      <option value="moins-1-an">Moins d'un an</option>
                     </select>
                   </div>
                 </div>

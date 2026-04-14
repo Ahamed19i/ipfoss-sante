@@ -262,9 +262,18 @@ export default function Admissions() {
                         className="w-full px-5 py-3.5 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-medical-blue focus:ring-4 focus:ring-medical-blue/10 outline-none transition-all font-medium text-sm appearance-none"
                       >
                         <option value="">Sélectionnez un programme</option>
-                        <option value="infirmiers">Soins Infirmiers</option>
-                        <option value="biomedecine">Sciences Biomédicales</option>
-                        <option value="sante-publique">Santé Publique</option>
+                        <optgroup label="Diplômes d’État (3 ans)">
+                          <option value="sage-femme">Sage-femme d’État</option>
+                          <option value="infirmier-etat">Infirmier d’État</option>
+                        </optgroup>
+                        <optgroup label="Diplômes Professionnels (2 ans)">
+                          <option value="assistant-infirmier">Assistant infirmier</option>
+                          <option value="aide-soignant">Aide-soignant</option>
+                        </optgroup>
+                        <optgroup label="Certifications (10 mois)">
+                          <option value="delegue-medical">Délégué médical</option>
+                          <option value="vendeur-pharmacie">Vendeur en pharmacie</option>
+                        </optgroup>
                       </select>
                       {errors.program && <span className="text-red-500 text-[10px] mt-1 font-bold">{errors.program.message as string}</span>}
                     </div>
@@ -360,9 +369,10 @@ export default function Admissions() {
               <h3 className="text-3xl font-display font-bold mb-10 text-center text-white">Grille Tarifaire</h3>
               <div className="space-y-8">
                 {[
-                  { name: 'Soins Infirmiers', price: '850 000 FCFA / an' },
-                  { name: 'Sciences Biomédicales', price: '950 000 FCFA / an' },
-                  { name: 'Santé Publique', price: '1 200 000 FCFA / an' },
+                  { name: 'Sage-femme d’État', price: '850 000 FCFA / an' },
+                  { name: 'Infirmier d’État', price: '850 000 FCFA / an' },
+                  { name: 'Assistant infirmier', price: '650 000 FCFA / an' },
+                  { name: 'Délégué médical', price: '450 000 FCFA' },
                 ].map((item) => (
                   <div key={item.name} className="flex justify-between items-center border-b border-white/10 pb-6">
                     <span className="text-white/80 text-lg font-medium">{item.name}</span>

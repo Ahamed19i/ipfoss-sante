@@ -43,6 +43,8 @@ export default function Formations() {
   const [isSubmittingLead, setIsSubmittingLead] = useState(false);
   const [formErrors, setFormErrors] = useState({ fullName: '', email: '', phone: '' });
 
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+
   useEffect(() => {
     const fetchFormations = async () => {
       try {
@@ -58,6 +60,18 @@ export default function Formations() {
     };
     fetchFormations();
   }, []);
+
+  // Handle category change from hash or click
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && categories.some(c => c.id === hash)) {
+      setActiveCategory(hash);
+    }
+  }, []);
+
+  const filteredCategories = activeCategory === 'all' 
+    ? categories 
+    : categories.filter(c => c.id === activeCategory);
 
   const validateForm = () => {
     const errors = { fullName: '', email: '', phone: '' };
@@ -161,15 +175,22 @@ export default function Formations() {
       {/* Categories Navigation */}
       <section className="py-6 bg-white/90 backdrop-blur-xl border-b border-gray-100 sticky top-[72px] z-40 shadow-sm transition-all overflow-x-auto">
         <div className="max-w-7xl mx-auto px-6 flex justify-center gap-4 md:gap-8 min-w-max">
+          <button
+            onClick={() => setActiveCategory('all')}
+            className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all text-sm font-bold border ${activeCategory === 'all' ? 'bg-medical-blue text-white border-medical-blue' : 'bg-gray-50 text-gray-600 border-gray-100 hover:bg-gray-100'}`}
+          >
+            <Activity className="w-5 h-5" />
+            Toutes les formations
+          </button>
           {categories.map((cat) => (
-            <a
+            <button
               key={cat.id}
-              href={`#${cat.id}`}
-              className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-gray-50 hover:bg-medical-blue hover:text-white transition-all text-sm font-bold border border-gray-100 hover:border-medical-blue/30 group"
+              onClick={() => setActiveCategory(cat.id)}
+              className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all text-sm font-bold border ${activeCategory === cat.id ? 'bg-medical-blue text-white border-medical-blue' : 'bg-gray-50 text-gray-600 border-gray-100 hover:bg-gray-100'}`}
             >
-              <cat.icon className="w-5 h-5 text-medical-blue group-hover:text-white transition-colors" />
+              <cat.icon className="w-5 h-5" />
               {cat.name}
-            </a>
+            </button>
           ))}
         </div>
       </section>
@@ -182,7 +203,7 @@ export default function Formations() {
               <div className="w-12 h-12 border-4 border-medical-blue/20 border-t-medical-blue rounded-full animate-spin"></div>
             </div>
           ) : (
-            categories.map((cat) => {
+            filteredCategories.map((cat) => {
               const catFormations = formations.filter(f => f.category === cat.id);
               if (catFormations.length === 0) return null;
 

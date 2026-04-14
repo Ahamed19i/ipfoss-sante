@@ -11,12 +11,9 @@ const navLinks = [
     name: 'Formations', 
     path: '/formations',
     dropdown: [
-      { name: 'Sage-femme d’État (3 ans)', path: '/formations#sage-femme' },
-      { name: 'Infirmier d’État (3 ans)', path: '/formations#infirmier' },
-      { name: 'Assistant infirmier (2 ans)', path: '/formations#assistant-infirmier' },
-      { name: 'Aide-soignant (2 ans)', path: '/formations#aide-soignant' },
-      { name: 'Délégué médical (10 mois)', path: '/formations#delegue-medical' },
-      { name: 'Vendeur en pharmacie (10 mois)', path: '/formations#vendeur-pharmacie' },
+      { name: 'Formations de 3 ans', path: '/formations#3-ans' },
+      { name: 'Formations de 2 ans', path: '/formations#2-ans' },
+      { name: 'Moins d\'un an', path: '/formations#moins-1-an' },
     ]
   },
   { 
@@ -36,9 +33,10 @@ const navLinks = [
 ];
 
 const searchableItems = [
-  { title: 'Soins Infirmiers', category: 'Formation', path: '/formations#infirmiers', description: 'Licence d\'État en soins infirmiers' },
-  { title: 'Santé Publique', category: 'Formation', path: '/formations#sante-publique', description: 'Master en santé publique et gestion' },
-  { title: 'Sciences Biomédicales', category: 'Formation', path: '/formations#biomedecine', description: 'Technicien supérieur de laboratoire' },
+  { title: 'Sage-femme d’État', category: 'Formation', path: '/formations#3-ans', description: 'Diplôme d’État de Sage-femme (3 ans)' },
+  { title: 'Infirmier d’État', category: 'Formation', path: '/formations#3-ans', description: 'Diplôme d’État d’Infirmier (3 ans)' },
+  { title: 'Assistant infirmier', category: 'Formation', path: '/formations#2-ans', description: 'Formation professionnelle d’Assistant infirmier (2 ans)' },
+  { title: 'Délégué médical', category: 'Formation', path: '/formations#moins-1-an', description: 'Certification de Délégué médical (10 mois)' },
   { title: 'Procédure d\'admission', category: 'Admissions', path: '/admissions', description: 'Comment s\'inscrire à l\'IPFOSS' },
   { title: 'Frais de scolarité', category: 'Admissions', path: '/admissions#frais', description: 'Tarifs et bourses d\'études' },
   { title: 'Bourses d\'excellence', category: 'Admissions', path: '/admissions#frais', description: 'Aides financières pour les étudiants' },
@@ -49,7 +47,6 @@ const searchableItems = [
   { title: 'Mot du Directeur', category: 'À Propos', path: '/a-propos#directeur', description: 'Message du Dr. Cheikh Saadbou Diop' },
   { title: 'Mission et Vision', category: 'À Propos', path: '/a-propos#vision', description: 'Nos valeurs et objectifs' },
   { title: 'Programmes & Diplômes', category: 'Études', path: '/programmes', description: 'Types de diplômes et certifications' },
-  { title: 'Diplôme d’État', category: 'Études', path: '/programmes#etat', description: 'Formations accréditées par l’État' },
 ];
 
 export default function Navbar() {

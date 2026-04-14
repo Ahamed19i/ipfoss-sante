@@ -1,3 +1,4 @@
+
 import { motion } from 'motion/react';
 import { ArrowRight, CheckCircle2, Users, Award, Building2, Stethoscope, HeartPulse, Microscope, Activity, GraduationCap, Calendar, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -162,7 +163,10 @@ export default function Home() {
               <p className="text-gray-600 mb-6 leading-relaxed">
                 {program.description}
               </p>
-              <Link to="/formations" className="text-medical-blue font-bold flex items-center gap-2 group/link">
+              <Link 
+                to={`/formations#${i === 0 ? '3-ans' : i === 1 ? '2-ans' : 'moins-1-an'}`} 
+                className="text-medical-blue font-bold flex items-center gap-2 group/link"
+              >
                 En savoir plus <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
               </Link>
             </motion.div>

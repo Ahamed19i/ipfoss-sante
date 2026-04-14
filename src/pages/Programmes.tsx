@@ -1,3 +1,4 @@
+
 import { motion } from 'motion/react';
 import { GraduationCap, Award, BookOpen, Clock, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -138,14 +139,22 @@ export default function Programmes() {
                 ))}
               </div>
               
-              <Link 
-                to="/admissions#formulaire" 
-                className={`w-full py-4 rounded-2xl font-bold text-center transition-all flex items-center justify-center gap-2 ${
-                  program.id === '3-ans' ? 'bg-medical-blue text-white hover:bg-blue-900' : 'bg-white border-2 border-gray-200 text-gray-900 hover:border-medical-blue hover:text-medical-blue'
-                }`}
-              >
-                S'inscrire <ArrowRight className="w-4 h-4" />
-              </Link>
+              <div className="flex flex-col gap-4 mt-auto">
+                <Link 
+                  to={`/formations#${program.id}`}
+                  className="w-full py-4 rounded-2xl font-bold text-center transition-all flex items-center justify-center gap-2 bg-white border-2 border-gray-200 text-gray-900 hover:border-medical-blue hover:text-medical-blue"
+                >
+                  Voir les formations <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link 
+                  to="/admissions#formulaire" 
+                  className={`w-full py-4 rounded-2xl font-bold text-center transition-all flex items-center justify-center gap-2 ${
+                    program.id === '3-ans' ? 'bg-medical-blue text-white hover:bg-blue-900' : 'bg-gray-900 text-white hover:bg-black'
+                  }`}
+                >
+                  S'inscrire <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -166,30 +175,29 @@ export default function Programmes() {
                 <thead>
                   <tr className="bg-gray-900 text-white">
                     <th className="px-8 py-6 font-display font-bold">Critères</th>
-                    <th className="px-8 py-6 font-display font-bold">Diplôme d'État</th>
-                    <th className="px-8 py-6 font-display font-bold">Diplôme d'École</th>
+                    <th className="px-8 py-6 font-display font-bold">3 ans (État)</th>
+                    <th className="px-8 py-6 font-display font-bold">2 ans (Pro)</th>
+                    <th className="px-8 py-6 font-display font-bold">10 mois (Certif)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   <tr>
-                    <td className="px-8 py-6 font-bold text-gray-900 bg-gray-50/50">Reconnaissance</td>
-                    <td className="px-8 py-6 text-sm text-gray-600">Nationale & Ministérielle</td>
-                    <td className="px-8 py-6 text-sm text-gray-600">Institutionnelle (IPFOSS)</td>
+                    <td className="px-8 py-6 font-bold text-gray-900 bg-gray-50/50">Diplôme</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Diplôme d'État</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Diplôme Professionnel</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Certificat IPFOSS</td>
                   </tr>
                   <tr>
-                    <td className="px-8 py-6 font-bold text-gray-900 bg-gray-50/50">Secteur d'activité</td>
+                    <td className="px-8 py-6 font-bold text-gray-900 bg-gray-50/50">Niveau requis</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Baccalauréat</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Niveau Bac / BFEM</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Niveau 3ème / Terminale</td>
+                  </tr>
+                  <tr>
+                    <td className="px-8 py-6 font-bold text-gray-900 bg-gray-50/50">Secteur</td>
                     <td className="px-8 py-6 text-sm text-gray-600">Public & Privé</td>
-                    <td className="px-8 py-6 text-sm text-gray-600">Privé & Entrepreneuriat</td>
-                  </tr>
-                  <tr>
-                    <td className="px-8 py-6 font-bold text-gray-900 bg-gray-50/50">Durée moyenne</td>
-                    <td className="px-8 py-6 text-sm text-gray-600">3 ans (Licence)</td>
-                    <td className="px-8 py-6 text-sm text-gray-600">2 ans (BTS/DTS)</td>
-                  </tr>
-                  <tr>
-                    <td className="px-8 py-6 font-bold text-gray-900 bg-gray-50/50">Admission</td>
-                    <td className="px-8 py-6 text-sm text-gray-600">Baccalauréat requis</td>
-                    <td className="px-8 py-6 text-sm text-gray-600">Bac ou Niveau Bac</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Privé & Cliniques</td>
+                    <td className="px-8 py-6 text-sm text-gray-600">Pharmacies / Labos</td>
                   </tr>
                 </tbody>
               </table>
