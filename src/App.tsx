@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
 import Formations from './pages/Formations';
+import Programmes from './pages/Programmes';
 import Admissions from './pages/Admissions';
 import Recherche from './pages/Recherche';
 import VieEtudiante from './pages/VieEtudiante';
@@ -25,6 +26,7 @@ import AuditLogs from './pages/Admin/AuditLogs';
 import AdminLayout from './pages/Admin/AdminLayout';
 import ErrorBoundary from './components/ErrorBoundary';
 import VisitTracker from './components/VisitTracker';
+import ScrollNavigation from './components/ScrollNavigation';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -44,6 +46,7 @@ export default function App() {
       <AuthProvider>
         <Router>
           <VisitTracker />
+          <ScrollNavigation />
           <ScrollToTop />
           <Routes>
             {/* Public Routes */}
@@ -51,6 +54,7 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/a-propos" element={<About />} />
               <Route path="/formations" element={<Formations />} />
+              <Route path="/programmes" element={<Programmes />} />
               <Route path="/admissions" element={<Admissions />} />
               <Route path="/recherche" element={<Recherche />} />
               <Route path="/vie-etudiante" element={<VieEtudiante />} />

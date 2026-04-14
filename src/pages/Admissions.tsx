@@ -100,8 +100,6 @@ export default function Admissions() {
   const onSubmit = async (data: any) => {
     const path = 'applications';
     try {
-      console.log("Envoi de la candidature...");
-      
       // Save to Firestore
       await addDoc(collection(db, path), {
         fullName: data.fullName,

@@ -1,13 +1,33 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, GraduationCap, Search, ArrowRight } from 'lucide-react';
+import { Menu, X, GraduationCap, Search, ArrowRight, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 const navLinks = [
   { name: 'Accueil', path: '/' },
   { name: 'À Propos', path: '/a-propos' },
-  { name: 'Formations', path: '/formations' },
+  { 
+    name: 'Formations', 
+    path: '/formations',
+    dropdown: [
+      { name: 'Sage-femme d’État (3 ans)', path: '/formations#sage-femme' },
+      { name: 'Infirmier d’État (3 ans)', path: '/formations#infirmier' },
+      { name: 'Assistant infirmier (2 ans)', path: '/formations#assistant-infirmier' },
+      { name: 'Aide-soignant (2 ans)', path: '/formations#aide-soignant' },
+      { name: 'Délégué médical (10 mois)', path: '/formations#delegue-medical' },
+      { name: 'Vendeur en pharmacie (10 mois)', path: '/formations#vendeur-pharmacie' },
+    ]
+  },
+  { 
+    name: 'Programmes', 
+    path: '/programmes',
+    dropdown: [
+      { name: 'Diplôme d’État', path: '/programmes#etat' },
+      { name: 'Diplôme d’école', path: '/programmes#ecole' },
+      { name: 'Formations courtes', path: '/programmes#courtes' },
+    ]
+  },
   { name: 'Admissions', path: '/admissions' },
   { name: 'Recherche', path: '/recherche' },
   { name: 'Vie Étudiante', path: '/vie-etudiante' },
@@ -28,11 +48,14 @@ const searchableItems = [
   { title: 'Contactez-nous', category: 'Support', path: '/contact', description: 'Nous trouver à Dakar' },
   { title: 'Mot du Directeur', category: 'À Propos', path: '/a-propos#directeur', description: 'Message du Dr. Cheikh Saadbou Diop' },
   { title: 'Mission et Vision', category: 'À Propos', path: '/a-propos#vision', description: 'Nos valeurs et objectifs' },
+  { title: 'Programmes & Diplômes', category: 'Études', path: '/programmes', description: 'Types de diplômes et certifications' },
+  { title: 'Diplôme d’État', category: 'Études', path: '/programmes#etat', description: 'Formations accréditées par l’État' },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -91,23 +114,41 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-6 xl:gap-8">
           {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`text-[13px] xl:text-sm font-bold transition-all relative py-2 whitespace-nowrap ${
-                location.pathname === link.path 
-                  ? (scrolled ? 'text-medical-blue' : 'text-white') 
-                  : (scrolled ? 'text-gray-600 hover:text-medical-blue' : 'text-white/80 hover:text-white')
-              }`}
-            >
-              {link.name}
-              {location.pathname === link.path && (
-                <motion.div 
-                  layoutId="nav-underline"
-                  className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${scrolled ? 'bg-medical-blue' : 'bg-white'}`}
-                />
+            <div key={link.path} className="relative group py-2">
+              <Link
+                to={link.path}
+                className={`text-[13px] xl:text-sm font-bold transition-all flex items-center gap-1 whitespace-nowrap ${
+                  location.pathname === link.path 
+                    ? (scrolled ? 'text-medical-blue' : 'text-white') 
+                    : (scrolled ? 'text-gray-600 hover:text-primary-red' : 'text-white/80 hover:text-white')
+                }`}
+              >
+                {link.name}
+                {link.dropdown && <ChevronDown className="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform" />}
+                {location.pathname === link.path && (
+                  <motion.div 
+                    layoutId="nav-underline"
+                    className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-full ${scrolled ? 'bg-medical-blue' : 'bg-white'}`}
+                  />
+                )}
+              </Link>
+
+              {link.dropdown && (
+                <div className="absolute top-full left-0 pt-2 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300">
+                  <div className="bg-white shadow-2xl rounded-2xl py-4 min-w-[280px] border border-gray-100 overflow-hidden">
+                    {link.dropdown.map((item) => (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className="block px-6 py-3 text-sm font-medium text-gray-600 hover:text-primary-red hover:bg-gray-50 transition-colors text-left"
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               )}
-            </Link>
+            </div>
           ))}
         </div>
 
@@ -264,24 +305,57 @@ export default function Navbar() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-8 py-12 flex flex-col gap-8">
+            <div className="flex-1 overflow-y-auto px-8 py-12 flex flex-col gap-6">
               {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.path}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 + 0.1 }}
-                >
-                  <Link
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`text-3xl font-display font-bold transition-colors ${
-                      location.pathname === link.path ? 'text-medical-blue' : 'text-gray-400 hover:text-medical-blue'
-                    }`}
+                <div key={link.path}>
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 + 0.1 }}
                   >
-                    {link.name}
-                  </Link>
-                </motion.div>
+                    <div className="flex items-center justify-between">
+                      <Link
+                        to={link.path}
+                        onClick={() => setIsOpen(false)}
+                        className={`text-2xl font-display font-bold transition-colors ${
+                          location.pathname === link.path ? 'text-medical-blue' : 'text-gray-400 hover:text-medical-blue'
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                      {link.dropdown && (
+                        <button 
+                          onClick={() => setExpandedMobile(expandedMobile === link.name ? null : link.name)}
+                          className="p-2 text-gray-400"
+                        >
+                          <ChevronDown className={`w-6 h-6 transition-transform ${expandedMobile === link.name ? 'rotate-180' : ''}`} />
+                        </button>
+                      )}
+                    </div>
+                    
+                    <AnimatePresence>
+                      {link.dropdown && expandedMobile === link.name && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden flex flex-col gap-4 mt-4 pl-4 border-l-2 border-gray-100"
+                        >
+                          {link.dropdown.map((item) => (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              onClick={() => setIsOpen(false)}
+                              className="text-lg font-medium text-gray-500 hover:text-medical-blue"
+                            >
+                              {item.name}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                </div>
               ))}
             </div>
 

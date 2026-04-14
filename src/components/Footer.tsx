@@ -7,6 +7,7 @@ const footerLinks = [
     title: 'L\'École',
     links: [
       { name: 'À Propos', path: '/a-propos' },
+      { name: 'Programmes', path: '/programmes' },
       { name: 'Vision & Mission', path: '/a-propos#vision' },
       { name: 'Mot du Directeur', path: '/a-propos#directeur' },
       { name: 'Partenariats', path: '/recherche#partenaires' },

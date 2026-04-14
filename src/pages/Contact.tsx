@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion, AnimatePresence } from 'motion/react';
@@ -56,7 +57,6 @@ export default function Contact() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
   const onSubmit = async (data: any) => {
-    console.log("Données de contact envoyées à ipfossante@gmail.com:", data);
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsSubmitted(true);
   };
