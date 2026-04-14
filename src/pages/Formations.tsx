@@ -5,7 +5,7 @@ import SectionHeading from '../components/SectionHeading';
 import Hero from '../components/Hero';
 import { db } from '../lib/firebase';
 import { collection, getDocs, addDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
-import { HeartPulse, Microscope, Activity, ShieldCheck, ArrowRight, Clock, GraduationCap, Briefcase, Download, X, Send, Mail, Phone, User } from 'lucide-react';
+import { HeartPulse, Microscope, Activity, ShieldCheck, ArrowRight, Clock, GraduationCap, Briefcase, Download, X, Send, Mail, Phone, User, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 
@@ -25,9 +25,9 @@ interface Formation {
 }
 
 const categories = [
-  { id: 'infirmiers', name: 'Soins Infirmiers', icon: HeartPulse },
-  { id: 'biomedecine', name: 'Sciences Biomédicales', icon: Microscope },
-  { id: 'sante-publique', name: 'Santé Publique', icon: Activity },
+  { id: '3-ans', name: 'Formations de 3 ans', icon: Award, description: 'Diplômes d’État (Licence) homologués par le Ministère de la Santé.' },
+  { id: '2-ans', name: 'Formations de 2 ans', icon: GraduationCap, description: 'Diplômes Professionnels pour une insertion rapide dans le secteur de la santé.' },
+  { id: 'moins-1-an', name: 'Moins d\'un an', icon: Clock, description: 'Certifications courtes et spécialisations intensives en 10 mois.' },
 ];
 
 export default function Formations() {
@@ -152,10 +152,10 @@ export default function Formations() {
   return (
     <div className="pt-10">
       <Hero 
-        title="Formations en Soins Infirmiers et Santé"
-        subtitle="Découvrez nos programmes d'excellence homologués par l'État du Sénégal pour devenir un professionnel de santé qualifié."
+        title="Nos Parcours de Formation"
+        subtitle="Une offre académique diversifiée et structurée pour répondre aux exigences du secteur de la santé au Sénégal."
         image="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=2070"
-        badge="Formations Médicales au Sénégal"
+        badge="Excellence Académique IPFOSS"
       />
 
       {/* Categories Navigation */}
@@ -188,10 +188,21 @@ export default function Formations() {
 
               return (
                 <div key={cat.id} id={cat.id} className="scroll-mt-48">
-                  <SectionHeading
-                    title={cat.name}
-                    subtitle={`Découvrez nos programmes spécialisés en ${cat.name.toLowerCase()}.`}
-                  />
+                  <div className="relative mb-16 rounded-[3rem] overflow-hidden p-12 md:p-20 bg-gray-900 text-white shadow-2xl">
+                    <div className="absolute top-0 right-0 w-1/2 h-full opacity-10">
+                      <cat.icon className="w-full h-full -rotate-12 translate-x-1/4 translate-y-1/4" />
+                    </div>
+                    <div className="relative z-10 max-w-2xl">
+                      <div className="flex items-center gap-4 mb-6">
+                        <div className="w-12 h-12 bg-medical-blue rounded-xl flex items-center justify-center">
+                          <cat.icon className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-xs font-bold uppercase tracking-[0.3em] text-medical-blue">Pôle d'Excellence</span>
+                      </div>
+                      <h2 className="text-4xl md:text-6xl font-display font-bold mb-6">{cat.name}</h2>
+                      <p className="text-xl text-white/70 leading-relaxed">{cat.description}</p>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {catFormations.map((program, i) => (
                       <motion.div

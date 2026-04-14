@@ -16,9 +16,10 @@ const footerLinks = [
   {
     title: 'Formations',
     links: [
-      { name: 'Soins Infirmiers', path: '/formations#infirmiers' },
-      { name: 'Santé Publique', path: '/formations#sante-publique' },
-      { name: 'Biomédecine', path: '/formations#biomedecine' },
+      { name: 'Sage-femme d’État', path: '/formations#3-ans' },
+      { name: 'Infirmier d’État', path: '/formations#3-ans' },
+      { name: 'Assistant infirmier', path: '/formations#2-ans' },
+      { name: 'Délégué médical', path: '/formations#moins-1-an' },
     ],
   },
   {

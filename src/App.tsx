@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -26,7 +25,6 @@ import AuditLogs from './pages/Admin/AuditLogs';
 import AdminLayout from './pages/Admin/AdminLayout';
 import ErrorBoundary from './components/ErrorBoundary';
 import VisitTracker from './components/VisitTracker';
-import ScrollNavigation from './components/ScrollNavigation';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -46,7 +44,6 @@ export default function App() {
       <AuthProvider>
         <Router>
           <VisitTracker />
-          <ScrollNavigation />
           <ScrollToTop />
           <Routes>
             {/* Public Routes */}

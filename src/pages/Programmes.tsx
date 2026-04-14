@@ -5,45 +5,60 @@ import SectionHeading from '../components/SectionHeading';
 
 const programs = [
   {
-    id: 'etat',
-    title: 'Diplôme d’État',
-    description: 'Programmes rigoureux accrédités par le Ministère de la Santé du Sénégal, ouvrant la voie à une carrière certifiée dans le secteur public et privé.',
-    duration: '3 ans',
+    id: '3-ans',
+    title: 'Formations de 3 ans',
+    subtitle: 'Diplômes d’État (Licence)',
+    description: 'Programmes d’excellence accrédités par le Ministère de la Santé, préparant aux carrières de cadres de santé.',
+    duration: '36 mois',
     icon: Award,
     color: 'bg-medical-blue',
+    formations: [
+      'Sage-femme d’État',
+      'Infirmier d’État'
+    ],
     features: [
       'Accréditation nationale complète',
       'Accès aux concours de la fonction publique',
       'Reconnaissance internationale (CEDEAO)',
-      'Stages cliniques intensifs'
+      'Stages cliniques intensifs en CHU'
     ]
   },
   {
-    id: 'ecole',
-    title: 'Diplôme d’école',
-    description: 'Formations spécialisées conçues par IPFOSS pour répondre aux besoins spécifiques du marché de l\'emploi médical et pharmaceutique.',
-    duration: '2 ans',
+    id: '2-ans',
+    title: 'Formations de 2 ans',
+    subtitle: 'Diplômes Professionnels',
+    description: 'Formations techniques axées sur la pratique pour une insertion rapide dans les structures de santé.',
+    duration: '24 mois',
     icon: GraduationCap,
     color: 'bg-health-green',
+    formations: [
+      'Assistant infirmier',
+      'Aide-soignant'
+    ],
     features: [
-      'Curriculum axé sur l\'employabilité',
+      'Curriculum 80% pratique',
       'Intervenants professionnels du secteur',
       'Partenariats avec des cliniques privées',
-      'Accompagnement à l\'insertion'
+      'Accompagnement à l\'insertion immédiate'
     ]
   },
   {
-    id: 'courtes',
-    title: 'Formations courtes',
-    description: 'Certifications de perfectionnement et spécialisations rapides pour une montée en compétences immédiate.',
-    duration: '6 - 10 mois',
+    id: 'moins-1-an',
+    title: 'Moins d\'un an',
+    subtitle: 'Certifications Courtes',
+    description: 'Spécialisations rapides pour répondre aux besoins urgents du secteur pharmaceutique et médical.',
+    duration: '10 mois',
     icon: Clock,
     color: 'bg-academic-gold',
+    formations: [
+      'Délégué médical',
+      'Vendeur en pharmacie'
+    ],
     features: [
-      'Format intensif et pratique',
-      'Idéal pour la reconversion',
+      'Format intensif et immersif',
+      'Idéal pour une insertion rapide',
       'Certificat de fin de formation IPFOSS',
-      'Horaires flexibles disponibles'
+      'Réseau de pharmacies partenaires'
     ]
   }
 ];
@@ -64,10 +79,10 @@ export default function Programmes() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6">
-              Nos Programmes d'Excellence
+              Nos Programmes & Diplômes
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Découvrez une structure académique conçue pour transformer votre passion pour la santé en une carrière solide et respectée.
+              Une organisation claire par durée d'études pour vous aider à choisir le parcours qui correspond à vos ambitions professionnelles.
             </p>
           </motion.div>
         </div>
@@ -84,22 +99,37 @@ export default function Programmes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-gray-50 rounded-[2.5rem] p-10 border border-gray-100 flex flex-col h-full hover:shadow-xl transition-all group"
+              className="bg-gray-50 rounded-[2.5rem] p-10 border border-gray-100 flex flex-col h-full hover:shadow-xl transition-all group scroll-mt-32"
             >
               <div className={`w-16 h-16 ${program.color} rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg group-hover:scale-110 transition-transform`}>
                 <program.icon className="w-8 h-8" />
               </div>
               
-              <h2 className="text-2xl font-display font-bold text-gray-900 mb-4">{program.title}</h2>
-              <div className="flex items-center gap-2 text-medical-blue font-bold text-sm mb-6 uppercase tracking-widest">
-                <Clock className="w-4 h-4" /> {program.duration}
+              <h2 className="text-2xl font-display font-bold text-gray-900 mb-1">{program.title}</h2>
+              <p className="text-medical-blue font-bold text-sm mb-4 uppercase tracking-widest">{program.subtitle}</p>
+              
+              <div className="flex items-center gap-2 text-gray-400 font-bold text-xs mb-6 uppercase tracking-widest">
+                <Clock className="w-4 h-4" /> Durée : {program.duration}
               </div>
               
-              <p className="text-gray-600 mb-8 leading-relaxed flex-grow">
+              <p className="text-gray-600 mb-8 leading-relaxed">
                 {program.description}
               </p>
+
+              <div className="mb-8 p-6 bg-white rounded-2xl border border-gray-100">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Formations incluses :</h4>
+                <ul className="space-y-3">
+                  {program.formations.map((f, idx) => (
+                    <li key={idx} className="flex items-center gap-3 text-gray-900 font-bold">
+                      <div className="w-1.5 h-1.5 rounded-full bg-medical-blue" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
               
-              <div className="space-y-4 mb-10">
+              <div className="space-y-4 mb-10 flex-grow">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Points clés :</h4>
                 {program.features.map((feature, idx) => (
                   <div key={idx} className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-health-green shrink-0 mt-0.5" />
@@ -111,7 +141,7 @@ export default function Programmes() {
               <Link 
                 to="/admissions#formulaire" 
                 className={`w-full py-4 rounded-2xl font-bold text-center transition-all flex items-center justify-center gap-2 ${
-                  program.id === 'etat' ? 'bg-medical-blue text-white hover:bg-blue-900' : 'bg-white border-2 border-gray-200 text-gray-900 hover:border-medical-blue hover:text-medical-blue'
+                  program.id === '3-ans' ? 'bg-medical-blue text-white hover:bg-blue-900' : 'bg-white border-2 border-gray-200 text-gray-900 hover:border-medical-blue hover:text-medical-blue'
                 }`}
               >
                 S'inscrire <ArrowRight className="w-4 h-4" />

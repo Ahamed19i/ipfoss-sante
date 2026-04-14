@@ -23,9 +23,9 @@ const navLinks = [
     name: 'Programmes', 
     path: '/programmes',
     dropdown: [
-      { name: 'Diplôme d’État', path: '/programmes#etat' },
-      { name: 'Diplôme d’école', path: '/programmes#ecole' },
-      { name: 'Formations courtes', path: '/programmes#courtes' },
+      { name: 'Formations de 3 ans', path: '/programmes#3-ans' },
+      { name: 'Formations de 2 ans', path: '/programmes#2-ans' },
+      { name: 'Formations de moins d\'un an', path: '/programmes#moins-1-an' },
     ]
   },
   { name: 'Admissions', path: '/admissions' },

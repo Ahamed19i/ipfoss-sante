@@ -1,6 +1,5 @@
-
 import { motion } from 'motion/react';
-import { ArrowRight, CheckCircle2, Users, Award, Building2, Stethoscope, HeartPulse, Microscope, Activity, GraduationCap, Calendar } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Users, Award, Building2, Stethoscope, HeartPulse, Microscope, Activity, GraduationCap, Calendar, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SectionHeading from '../components/SectionHeading';
 
@@ -13,22 +12,22 @@ const stats = [
 
 const programs = [
   {
-    title: 'Soins Infirmiers',
-    description: 'Développez les compétences techniques et humaines indispensables pour une prise en charge optimale des patients.',
-    icon: HeartPulse,
-    color: 'bg-green-500',
+    title: 'Diplômes d’État (3 ans)',
+    description: 'Devenez Sage-femme ou Infirmier d’État avec nos programmes d’excellence accrédités.',
+    icon: Award,
+    color: 'bg-medical-blue',
   },
   {
-    title: 'Sciences Biomédicales',
-    description: 'Explorez les fondements biologiques de la santé et participez aux innovations diagnostiques de demain.',
-    icon: Microscope,
-    color: 'bg-purple-500',
+    title: 'Diplômes Pro (2 ans)',
+    description: 'Formations d\'Assistant Infirmier et d\'Aide-soignant pour une insertion rapide.',
+    icon: GraduationCap,
+    color: 'bg-health-green',
   },
   {
-    title: 'Santé Publique',
-    description: 'Apprenez à concevoir, gérer et évaluer des programmes de santé à l\'échelle des populations.',
-    icon: Activity,
-    color: 'bg-orange-500',
+    title: 'Certifications (< 1 an)',
+    description: 'Spécialisez-vous en tant que Délégué Médical ou Vendeur en Pharmacie en 10 mois.',
+    icon: Clock,
+    color: 'bg-academic-gold',
   },
 ];
 
