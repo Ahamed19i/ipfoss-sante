@@ -1,3 +1,5 @@
+
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -7,7 +9,6 @@ import About from './pages/About';
 import Formations from './pages/Formations';
 import Programmes from './pages/Programmes';
 import Admissions from './pages/Admissions';
-import Recherche from './pages/Recherche';
 import VieEtudiante from './pages/VieEtudiante';
 import Actualites from './pages/Actualites';
 import ActualiteDetail from './pages/ActualiteDetail';
@@ -53,7 +54,6 @@ export default function App() {
               <Route path="/formations" element={<Formations />} />
               <Route path="/programmes" element={<Programmes />} />
               <Route path="/admissions" element={<Admissions />} />
-              <Route path="/recherche" element={<Recherche />} />
               <Route path="/vie-etudiante" element={<VieEtudiante />} />
               <Route path="/actualites" element={<Actualites />} />
               <Route path="/actualites/:id" element={<ActualiteDetail />} />
