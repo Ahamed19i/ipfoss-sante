@@ -39,7 +39,7 @@ service cloud.firestore {
     // Document ID: auto-generated
     // Fields:
     //   - title: string (required)
-    //   - category: string (required, enum)
+    //   - category: string (required, enum: 3-ans, 2-ans, moins-1-an)
     //   - description: string (required)
     //   - detailedProgram: string (optional)
     //   - modules: string (optional)
@@ -128,7 +128,7 @@ service cloud.firestore {
     function isValidFormation(data) {
       return hasOnlyAllowedFields(['title', 'category', 'description', 'detailedProgram', 'modules', 'fees', 'duration', 'degree', 'outcomes', 'requirements', 'brochureUrl']) &&
              data.title is string && data.title.size() > 0 &&
-             data.category in ['infirmiers', 'biomedecine', 'sante-publique'] &&
+             data.category in ['3-ans', '2-ans', 'moins-1-an'] &&
              data.description is string &&
              data.duration is string &&
              data.degree is string;

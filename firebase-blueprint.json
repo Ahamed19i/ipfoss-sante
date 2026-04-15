@@ -49,7 +49,7 @@
       "type": "object",
       "properties": {
         "title": { "type": "string", "description": "Nom de la formation" },
-        "category": { "type": "string", "description": "Catégorie (infirmiers, biomedecine, sante-publique)" },
+        "category": { "type": "string", "description": "Catégorie (3-ans, 2-ans, moins-1-an)" },
         "description": { "type": "string", "description": "Description courte" },
         "detailedProgram": { "type": "string", "description": "Programme détaillé (Markdown)" },
         "modules": { "type": "string", "description": "Modules / spécialités (Markdown)" },
